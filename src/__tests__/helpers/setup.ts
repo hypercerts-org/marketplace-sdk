@@ -5,11 +5,13 @@ import chaiAsPromised from "chai-as-promised";
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
 import { Addresses } from "../../types";
-import type { LooksRareProtocol } from "../../typechain/@looksrare/contracts-exchange-v2/contracts/LooksRareProtocol";
-import type { TransferManager } from "../../typechain/@looksrare/contracts-exchange-v2/contracts/TransferManager";
-import type { StrategyCollectionOffer } from "../../typechain/@looksrare/contracts-exchange-v2/contracts/executionStrategies/StrategyCollectionOffer";
-import type { CreatorFeeManagerWithRoyalties } from "../../typechain/@looksrare/contracts-exchange-v2/contracts/CreatorFeeManagerWithRoyalties";
-import type { OrderValidatorV2A } from "../../typechain/@looksrare/contracts-exchange-v2/contracts/helpers/OrderValidatorV2A";
+import type {
+  HypercertExchange,
+  TransferManager,
+  OrderValidatorV2A,
+  StrategyCollectionOffer,
+  CreatorFeeManagerWithRoyalties,
+} from "@hypercerts-org/contracts";
 import type { MockERC721 } from "../../typechain/src/contracts/tests/MockERC721";
 import type { MockERC1155 } from "../../typechain/src/contracts/tests/MockERC1155";
 import type { WETH } from "../../typechain/solmate/src/tokens/WETH";
@@ -19,7 +21,7 @@ chai.use(chaiAsPromised);
 
 export interface SetupMocks {
   contracts: {
-    looksRareProtocol: LooksRareProtocol;
+    looksRareProtocol: HypercertExchange;
     transferManager: TransferManager;
     collectionERC721: MockERC721;
     collectionERC1155: MockERC1155;
@@ -81,7 +83,7 @@ export const setUpContracts = async (): Promise<SetupMocks> => {
     signers.protocolFeeRecipient.address,
     await transferManager.getAddress(),
     await weth.getAddress()
-  )) as LooksRareProtocol;
+  )) as HypercertExchange;
   const strategyCollectionOffer = (await deploy("StrategyCollectionOffer")) as StrategyCollectionOffer;
 
   const addresses = {

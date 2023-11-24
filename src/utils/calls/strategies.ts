@@ -1,6 +1,5 @@
 import { Contract, Overrides, Provider, Signer } from "ethers";
-import { LooksRareProtocol } from "../../typechain/@looksrare/contracts-exchange-v2/contracts/LooksRareProtocol";
-import abi from "../../abis/LooksRareProtocol.json";
+import { HypercertExchange, HypercertExchangeAbi as abi } from "@hypercerts-org/contracts";
 import { StrategyType, StrategyInfo } from "../../types";
 
 export const strategyInfo = async (
@@ -9,7 +8,7 @@ export const strategyInfo = async (
   strategyId: StrategyType,
   overrides?: Overrides
 ): Promise<StrategyInfo> => {
-  const contract = new Contract(address, abi).connect(signerOrProvider) as LooksRareProtocol;
+  const contract = new Contract(address, abi).connect(signerOrProvider) as HypercertExchange;
   const strategy = await contract.strategyInfo(strategyId, { ...overrides });
   return {
     isActive: strategy.isActive,

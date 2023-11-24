@@ -1,6 +1,6 @@
 {
   "name": "@hypercerts-org/marketplace-sdk",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -26,7 +26,6 @@
   },
   "scripts": {
     "prebuild": "rm -rf ./src/typechain ./src/artifacts cache dist",
-    "prepublishOnly": "yarn build",
     "dev": "rollup -c --bundleConfigAsCjs -w",
     "build:ts": "rollup -c --bundleConfigAsCjs",
     "build:sc": "hardhat compile",
@@ -47,7 +46,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
-    "@hypercerts-org/contracts": "^0.10.0",
+    "@hypercerts-org/contracts": "1.0.0-alpha.4",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@looksrare/contracts-exchange-v1": "^1.2.0",
     "@looksrare/contracts-exchange-v2": "^0.1.2",

@@ -103,6 +103,11 @@
   },
   {
     "inputs": [],
+    "name": "NotAffiliateController",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "NotOwner",
     "type": "error"
   },
@@ -119,6 +124,11 @@
   {
     "inputs": [],
     "name": "OutsideOfTimeRange",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PercentageTooHigh",
     "type": "error"
   },
   {
@@ -216,13 +226,33 @@
   },
   {
     "inputs": [],
-    "name": "UnsupportedCollectionType",
+    "name": "WrongPotentialOwner",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "WrongPotentialOwner",
-    "type": "error"
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "affiliate",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "currency",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "affiliateFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "AffiliatePayment",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -272,6 +302,51 @@
       }
     ],
     "name": "InitiateOwnershipTransfer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "affiliateController",
+        "type": "address"
+      }
+    ],
+    "name": "NewAffiliateController",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isActive",
+        "type": "bool"
+      }
+    ],
+    "name": "NewAffiliateProgramStatus",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "affiliate",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewAffiliateRate",
     "type": "event"
   },
   {
@@ -721,6 +796,38 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "affiliateController",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "affiliateRates",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256[]",
@@ -942,6 +1049,11 @@
         "type": "tuple[]"
       },
       {
+        "internalType": "address",
+        "name": "affiliate",
+        "type": "address"
+      },
+      {
         "internalType": "bool",
         "name": "isAtomic",
         "type": "bool"
@@ -1086,6 +1198,11 @@
         "internalType": "struct OrderStructs.MerkleTree",
         "name": "merkleTree",
         "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "affiliate",
+        "type": "address"
       }
     ],
     "name": "executeTakerAsk",
@@ -1227,6 +1344,11 @@
         "internalType": "struct OrderStructs.MerkleTree",
         "name": "merkleTree",
         "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "affiliate",
+        "type": "address"
       }
     ],
     "name": "executeTakerBid",
@@ -1294,6 +1416,19 @@
     "name": "initiateOwnershipTransfer",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isAffiliateProgramActive",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1563,6 +1698,50 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAffiliateController",
+        "type": "address"
+      }
+    ],
+    "name": "updateAffiliateController",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "isActive",
+        "type": "bool"
+      }
+    ],
+    "name": "updateAffiliateProgramStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "affiliate",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bp",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateAffiliateRate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

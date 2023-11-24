@@ -1,7 +1,6 @@
 import { Contract, ZeroAddress, Signer } from "ethers";
-import { LooksRareProtocol } from "../../typechain/@looksrare/contracts-exchange-v2/contracts/LooksRareProtocol";
+import { HypercertExchange, HypercertExchangeAbi } from "@hypercerts-org/contracts";
 
-import abiLooksRareProtocol from "../../abis/LooksRareProtocol.json";
 import { Maker, MerkleTree, Taker, ContractMethods } from "../../types";
 import { PayableOverrides } from "../../typechain/common";
 
@@ -18,7 +17,7 @@ export const executeTakerBid = (
     ...overrides,
     ...(maker.currency === ZeroAddress && { value: maker.price }),
   };
-  const contract = new Contract(address, abiLooksRareProtocol).connect(signer) as LooksRareProtocol;
+  const contract = new Contract(address, HypercertExchangeAbi).connect(signer) as HypercertExchange;
   return {
     call: (additionalOverrides?: PayableOverrides) =>
       contract.executeTakerBid.send(taker, maker, makerSignature, merkleTree, {
@@ -47,7 +46,7 @@ export const executeTakerAsk = (
   merkleTree: MerkleTree,
   overrides?: PayableOverrides
 ): ContractMethods => {
-  const contract = new Contract(address, abiLooksRareProtocol).connect(signer) as LooksRareProtocol;
+  const contract = new Contract(address, HypercertExchangeAbi).connect(signer) as HypercertExchange;
   return {
     call: (additionalOverrides?: PayableOverrides) =>
       contract.executeTakerAsk.send(taker, maker, makerSignature, merkleTree, {
@@ -82,7 +81,7 @@ export const executeMultipleTakerBids = (
     ...overrides,
     ...(value > 0 && { value }),
   };
-  const contract = new Contract(address, abiLooksRareProtocol).connect(signer) as LooksRareProtocol;
+  const contract = new Contract(address, HypercertExchangeAbi).connect(signer) as HypercertExchange;
   return {
     call: (additionalOverrides?: PayableOverrides) =>
       contract.executeMultipleTakerBids.send(taker, maker, makerSignature, merkleTree, isAtomic, {
