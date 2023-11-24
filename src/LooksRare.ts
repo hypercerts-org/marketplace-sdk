@@ -396,12 +396,11 @@ export class LooksRare {
     taker: Taker,
     signature: string,
     merkleTree: MerkleTree = defaultMerkleTree,
-    affiliate: string = ZeroAddress,
     overrides?: Overrides
   ): ContractMethods {
     const signer = this.getSigner();
     const execute = maker.quoteType === QuoteType.Ask ? executeTakerBid : executeTakerAsk;
-    return execute(signer, this.addresses.EXCHANGE_V2, taker, maker, signature, merkleTree, affiliate, overrides);
+    return execute(signer, this.addresses.EXCHANGE_V2, taker, maker, signature, merkleTree, overrides);
   }
 
   /**
@@ -420,7 +419,6 @@ export class LooksRare {
       merkleTree?: MerkleTree;
     }[],
     isAtomic: boolean,
-    affiliate: string = ZeroAddress,
     overrides?: Overrides
   ) {
     const signer = this.getSigner();
@@ -448,7 +446,6 @@ export class LooksRare {
       signatures,
       isAtomic,
       merkleTrees,
-      affiliate,
       overrides
     );
   }
