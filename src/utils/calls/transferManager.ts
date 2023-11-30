@@ -1,6 +1,5 @@
 import { Contract, Overrides, Provider, Signer } from "ethers";
-import { TransferManager } from "../../typechain/@looksrare/contracts-exchange-v2/contracts/TransferManager";
-import abi from "../../abis/TransferManager.json";
+import { TransferManager, TransferManagerAbi as abi } from "@hypercerts-org/contracts";
 import { ContractMethods, BatchTransferItem } from "../../types";
 
 export const hasUserApprovedOperator = async (
