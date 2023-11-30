@@ -7,6 +7,7 @@ import * as strategies from "./utils/calls/strategies";
 import * as encode from "./utils/encodeOrderParams";
 import * as signMakerOrders from "./utils/signMakerOrders";
 import * as eip712 from "./utils/eip712";
+import * as asDeployedChain from "./utils/asDeployedChain";
 const utils = {
   ...tokens,
   ...exchange,
@@ -17,6 +18,7 @@ const utils = {
   ...encode,
   ...signMakerOrders,
   ...eip712,
+  ...asDeployedChain,
 };
 export { utils };
 
