@@ -8,6 +8,8 @@ import * as encode from "./utils/encodeOrderParams";
 import * as signMakerOrders from "./utils/signMakerOrders";
 import * as eip712 from "./utils/eip712";
 import * as asDeployedChain from "./utils/asDeployedChain";
+import * as api from "./utils/api";
+
 const utils = {
   ...tokens,
   ...exchange,
@@ -19,6 +21,7 @@ const utils = {
   ...signMakerOrders,
   ...eip712,
   ...asDeployedChain,
+  api,
 };
 export { utils };
 
