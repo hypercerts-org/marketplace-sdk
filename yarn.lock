@@ -880,10 +880,10 @@
   dependencies:
     hardhat "^2.18.3"
 
-"@hypercerts-org/contracts@1.0.0-alpha.6":
-  version "1.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@hypercerts-org/contracts/-/contracts-1.0.0-alpha.6.tgz#ccbe8616751e1148fb4998c5aea2e6d7707ce2cc"
-  integrity sha512-8XV9jlj5P+WL+hFX56OP+cYpLDwicZoGteN3ZAPHc1Y07fy7I2tpx1/MU7Sg2GX2nVO46Xix1MblQxVzx0Xy8Q==
+"@hypercerts-org/contracts@1.0.0-alpha.7":
+  version "1.0.0-alpha.7"
+  resolved "https://registry.yarnpkg.com/@hypercerts-org/contracts/-/contracts-1.0.0-alpha.7.tgz#19f4d22d98dfcbf5b1526b3df160b03991105653"
+  integrity sha512-4BobjWqTalcL23v/DxQ1A604OT+kQnbm9mCfFGxXM0bfHCo28Xpn5He8IqmqybW8G4o2uBcD1yNVxHMFNIcNJA==
   dependencies:
     hardhat "^2.18.3"
 

@@ -65,7 +65,6 @@ export const createOrder = async ({
 };
 
 export const fetchOrdersByHypercertId = async ({ hypercertId, chainId }: { hypercertId: string; chainId: number }) => {
-  console.log("fetchOrdersByHypercertId", hypercertId, chainId);
   const hypercertsClient = new HypercertClient({
     chain: { id: chainId },
   });
