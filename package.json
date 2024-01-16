@@ -1,6 +1,6 @@
 {
   "name": "@hypercerts-org/marketplace-sdk",
-  "version": "0.0.9",
+  "version": "0.0.12",
   "license": "MIT",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -83,8 +83,8 @@
     "rollup-plugin-dotenv": "^0.5.0",
     "solhint": "^3.4.1",
     "solmate": "^6.6.1",
-    "supabase": "^1.127.4",
     "source-map-support": "^0.5.21",
+    "supabase": "^1.127.4",
     "ts-node": "^10.9.1",
     "typechain": "^8.2.0",
     "typedoc": "^0.24.7",
@@ -92,7 +92,7 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
-    "@hypercerts-org/sdk": "^1.0.3",
+    "@hypercerts-org/sdk": "^1.4.1",
     "@supabase/supabase-js": "^2.39.2",
     "merkletreejs": "^0.3.9"
   }

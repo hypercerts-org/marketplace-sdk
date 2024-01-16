@@ -11,7 +11,7 @@ export interface Addresses {
 
 /** List of supported chains */
 export enum ChainId {
-  GOERLI = 5,
+  CELO = 42220,
   SEPOLIA = 11155111,
   HARDHAT = 31337,
 }
