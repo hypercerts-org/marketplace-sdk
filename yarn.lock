@@ -885,7 +885,7 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-2.0.2.tgz#d9fae00a2d5cb40f92cfe64b47ad749fbc38f917"
   integrity sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==
 
-"@hypercerts-org/contracts@1.1.0", "@hypercerts-org/contracts@1.2.0":
+"@hypercerts-org/contracts@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@hypercerts-org/contracts/-/contracts-1.1.0.tgz#00c0765b0f79d706aac9764f46233acddc1382b9"
   integrity sha512-iEEJP9LQTfgcFjnJj82AwkAob3kfFcTmxm6AGrCXFzt7CU3Xo2odCFKZ81UPFV9C4PyI8tPTSGd12NmUzjLlqA==
