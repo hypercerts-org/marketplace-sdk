@@ -3,17 +3,15 @@ import { Eip712MakerMerkleTree } from "./utils/Eip712MakerMerkleTree";
 
 /** Addresses used to create a LooksRare instance */
 export interface Addresses {
-  EXCHANGE_V2: string;
-  TRANSFER_MANAGER_V2: string;
-  WETH: string;
-  ORDER_VALIDATOR_V2: string;
+  EXCHANGE_V2: `0x${string}`;
+  TRANSFER_MANAGER_V2: `0x${string}`;
+  WETH: `0x${string}`;
+  ORDER_VALIDATOR_V2: `0x${string}`;
 }
 
 /** List of supported chains */
 export enum ChainId {
-  CELO = 42220,
   SEPOLIA = 11155111,
-  HARDHAT = 31337,
 }
 
 /** ChainInfo data used to interact with LooksRare ecosystem */
