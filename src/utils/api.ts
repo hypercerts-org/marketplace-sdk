@@ -13,7 +13,7 @@ export const supabaseHypercerts = createClient<HypercertsDatabase>(
 );
 
 export const fetchOrderNonce = async ({ address, chainId }: { address: string; chainId: number }) => {
-  return fetch(`${HYPERCERTS_MARKETPLACE_API_URL}/marketplace/order-nonce`, {
+  return fetch(`${HYPERCERTS_MARKETPLACE_API_URL}/marketplace/order-nonce/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export const createOrder = async ({
 }) => {
   const { globalNonce, ...orderWithoutGlobalNonce } = order;
 
-  return fetch(`${HYPERCERTS_MARKETPLACE_API_URL}/marketplace/order`, {
+  return fetch(`${HYPERCERTS_MARKETPLACE_API_URL}/marketplace/order/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
