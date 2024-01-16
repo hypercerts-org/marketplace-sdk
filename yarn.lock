@@ -885,14 +885,7 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-2.0.2.tgz#d9fae00a2d5cb40f92cfe64b47ad749fbc38f917"
   integrity sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==
 
-"@hypercerts-org/contracts@1.0.0-alpha.7":
-  version "1.0.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/@hypercerts-org/contracts/-/contracts-1.0.0-alpha.7.tgz#19f4d22d98dfcbf5b1526b3df160b03991105653"
-  integrity sha512-4BobjWqTalcL23v/DxQ1A604OT+kQnbm9mCfFGxXM0bfHCo28Xpn5He8IqmqybW8G4o2uBcD1yNVxHMFNIcNJA==
-  dependencies:
-    hardhat "^2.18.3"
-
-"@hypercerts-org/contracts@1.1.0":
+"@hypercerts-org/contracts@1.1.0", "@hypercerts-org/contracts@1.2.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@hypercerts-org/contracts/-/contracts-1.1.0.tgz#00c0765b0f79d706aac9764f46233acddc1382b9"
   integrity sha512-iEEJP9LQTfgcFjnJj82AwkAob3kfFcTmxm6AGrCXFzt7CU3Xo2odCFKZ81UPFV9C4PyI8tPTSGd12NmUzjLlqA==
