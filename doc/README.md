@@ -1,6 +1,6 @@
-# @looksrare/sdk-v2
+# @hypercerts-org/marketplace-sdk
 
 ## Modules
 
-- [LooksRare](modules/LooksRare.md)
+- [HypercertExchangeClient](modules/HypercertExchangeClient.md)
 - [types](modules/types.md)

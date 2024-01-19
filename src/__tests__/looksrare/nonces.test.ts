@@ -2,18 +2,18 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { setUpContracts, SetupMocks, getSigners, Signers } from "../helpers/setup";
 import { viewUserBidAskNonces } from "../../utils/calls/nonces";
-import { LooksRare } from "../../LooksRare";
+import { HypercertExchangeClient } from "../../HypercertExchangeClient";
 import { ChainId } from "../../types";
 
 describe("Nonces and order cancellation", () => {
   let mocks: SetupMocks;
   let signers: Signers;
-  let lrUser1: LooksRare;
+  let lrUser1: HypercertExchangeClient;
 
   beforeEach(async () => {
     mocks = await setUpContracts();
     signers = await getSigners();
-    lrUser1 = new LooksRare(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
+    lrUser1 = new HypercertExchangeClient(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
   });
 
   describe("cancelOrders", () => {

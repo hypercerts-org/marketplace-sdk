@@ -15,3 +15,15 @@ ___
 ### ERC721
 
 • **ERC721** = ``0``
+
+___
+
+### HYPERBOARD
+
+• **HYPERBOARD** = ``3``
+
+___
+
+### HYPERCERT
+
+• **HYPERCERT** = ``2``

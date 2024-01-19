@@ -2,21 +2,21 @@ import { expect } from "chai";
 import { parseEther } from "ethers";
 import { ethers } from "hardhat";
 import { setUpContracts, SetupMocks, getSigners, Signers } from "../helpers/setup";
-import { LooksRare } from "../../LooksRare";
+import { HypercertExchangeClient } from "../../HypercertExchangeClient";
 import { ChainId, CollectionType, StrategyType, CreateMakerInput } from "../../types";
 
 describe("execute taker bid", () => {
   let mocks: SetupMocks;
   let signers: Signers;
-  let lrUser1: LooksRare;
-  let lrUser2: LooksRare;
+  let lrUser1: HypercertExchangeClient;
+  let lrUser2: HypercertExchangeClient;
   let baseMakerAskInput: CreateMakerInput;
 
   beforeEach(async () => {
     mocks = await setUpContracts();
     signers = await getSigners();
-    lrUser1 = new LooksRare(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
-    lrUser2 = new LooksRare(ChainId.HARDHAT, ethers.provider, signers.user2, mocks.addresses);
+    lrUser1 = new HypercertExchangeClient(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
+    lrUser2 = new HypercertExchangeClient(ChainId.HARDHAT, ethers.provider, signers.user2, mocks.addresses);
 
     baseMakerAskInput = {
       collection: mocks.addresses.MOCK_COLLECTION_ERC721,

@@ -18,18 +18,6 @@ ___
 
 ___
 
-### cdnUrl
-
-• **cdnUrl**: `string`
-
-___
-
-### cloudinaryUrl
-
-• **cloudinaryUrl**: `string`
-
-___
-
 ### explorer
 
 • **explorer**: `string`
@@ -48,18 +36,6 @@ ___
 
 ___
 
-### rewardsSubgraphUrl
-
-• **rewardsSubgraphUrl**: `string`
-
-___
-
 ### rpcUrl
 
 • **rpcUrl**: `string`
-
-___
-
-### wsUrl
-
-• **wsUrl**: `string`

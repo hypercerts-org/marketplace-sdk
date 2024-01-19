@@ -30,19 +30,19 @@
 
 ### CreateMakerCollectionOfferInput
 
-Ƭ **CreateMakerCollectionOfferInput**: `Omit`<[`CreateMakerInput`](../interfaces/types.CreateMakerInput.md), ``"strategyId"`` \| ``"itemIds"``\>
+Ƭ **CreateMakerCollectionOfferInput**: `Omit`\<[`CreateMakerInput`](../interfaces/types.CreateMakerInput.md), ``"strategyId"`` \| ``"itemIds"``\>
 
 ___
 
 ### CreateMakerCollectionOfferWithProofInput
 
-Ƭ **CreateMakerCollectionOfferWithProofInput**: `Omit`<[`CreateMakerInput`](../interfaces/types.CreateMakerInput.md), ``"strategyId"``\>
+Ƭ **CreateMakerCollectionOfferWithProofInput**: `Omit`\<[`CreateMakerInput`](../interfaces/types.CreateMakerInput.md), ``"strategyId"``\>
 
 ___
 
 ### EIP712TypedData
 
-Ƭ **EIP712TypedData**: `Record`<`string`, `TypedDataField`[]\>
+Ƭ **EIP712TypedData**: `Record`\<`string`, `TypedDataField`[]\>
 
 EIP712 type data
 

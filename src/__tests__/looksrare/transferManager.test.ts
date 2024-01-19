@@ -6,18 +6,18 @@ import { ERC1155 } from "../../typechain/solmate/src/tokens/ERC1155.sol/ERC1155"
 import abiIERC721 from "../../abis/IERC721.json";
 import abiIERC1155 from "../../abis/IERC1155.json";
 import { setUpContracts, SetupMocks, getSigners, Signers } from "../helpers/setup";
-import { LooksRare } from "../../LooksRare";
+import { HypercertExchangeClient } from "../../HypercertExchangeClient";
 import { ChainId, CollectionType, BatchTransferItem } from "../../types";
 
 describe("Transfer manager", () => {
   let mocks: SetupMocks;
   let signers: Signers;
-  let lrUser1: LooksRare;
+  let lrUser1: HypercertExchangeClient;
 
   beforeEach(async () => {
     mocks = await setUpContracts();
     signers = await getSigners();
-    lrUser1 = new LooksRare(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
+    lrUser1 = new HypercertExchangeClient(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
   });
 
   it("has user approved", async () => {

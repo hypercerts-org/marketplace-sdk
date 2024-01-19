@@ -32,7 +32,7 @@ export const fetchOrderNonce = async ({ address, chainId }: { address: string; c
     .then((res) => res.data);
 };
 
-export const createOrder = async ({
+export const registerOrder = async ({
   order,
   signer,
   signature,

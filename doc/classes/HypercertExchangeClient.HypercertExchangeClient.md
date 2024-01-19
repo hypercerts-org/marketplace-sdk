@@ -1,6 +1,6 @@
-# Class: LooksRare
+# Class: HypercertExchangeClient
 
-[LooksRare](../modules/LooksRare.md).LooksRare
+[HypercertExchangeClient](../modules/HypercertExchangeClient.md).HypercertExchangeClient
 
 LooksRare
 This class provides helpers to interact with the LooksRare V2 contracts
@@ -9,7 +9,7 @@ This class provides helpers to interact with the LooksRare V2 contracts
 
 ### constructor
 
-• **new LooksRare**(`chainId`, `provider`, `signer?`, `override?`)
+• **new HypercertExchangeClient**(`chainId`, `provider`, `signer?`, `override?`)
 
 LooksRare protocol main class
 
@@ -17,7 +17,7 @@ LooksRare protocol main class
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `chainId` | [`ChainId`](../enums/types.ChainId.md) | Current app chain id |
+| `chainId` | [`SEPOLIA`](../enums/types.ChainId.md#sepolia) | Current app chain id |
 | `provider` | `Provider` | Ethers provider |
 | `signer?` | `Signer` | Ethers signer |
 | `override?` | [`Addresses`](../interfaces/types.Addresses.md) | Overrides contract addresses for hardhat setup |
@@ -34,7 +34,7 @@ ___
 
 ### chainId
 
-• `Readonly` **chainId**: [`ChainId`](../enums/types.ChainId.md)
+• `Readonly` **chainId**: [`SEPOLIA`](../enums/types.ChainId.md#sepolia)
 
 Current app chain ID
 
@@ -66,7 +66,7 @@ Ethers signer
 
 ### approveAllCollectionItems
 
-▸ **approveAllCollectionItems**(`collectionAddress`, `approved?`, `overrides?`): `Promise`<`ContractTransactionResponse`\>
+▸ **approveAllCollectionItems**(`collectionAddress`, `approved?`, `overrides?`): `Promise`\<`ContractTransactionResponse`\>
 
 Approve all the items of a collection, to eventually be traded on LooksRare
 The spender is the TransferManager.
@@ -81,7 +81,7 @@ The spender is the TransferManager.
 
 #### Returns
 
-`Promise`<`ContractTransactionResponse`\>
+`Promise`\<`ContractTransactionResponse`\>
 
 ContractTransaction
 
@@ -89,7 +89,7 @@ ___
 
 ### approveErc20
 
-▸ **approveErc20**(`tokenAddress`, `amount?`, `overrides?`): `Promise`<`ContractTransactionResponse`\>
+▸ **approveErc20**(`tokenAddress`, `amount?`, `overrides?`): `Promise`\<`ContractTransactionResponse`\>
 
 Approve an ERC20 to be used as a currency on LooksRare.
 The spender is the LooksRareProtocol contract.
@@ -104,7 +104,7 @@ The spender is the LooksRareProtocol contract.
 
 #### Returns
 
-`Promise`<`ContractTransactionResponse`\>
+`Promise`\<`ContractTransactionResponse`\>
 
 ContractTransaction
 
@@ -174,9 +174,27 @@ ContractMethods
 
 ___
 
+### createDirectFractionsSaleMakerAsk
+
+▸ **createDirectFractionsSaleMakerAsk**(`«destructured»`): `Promise`\<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
+
+Create a maker ask for a collection or singular offer of fractions
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `«destructured»` | `Omit`\<[`CreateMakerInput`](../interfaces/types.CreateMakerInput.md), ``"subsetNonce"`` \| ``"orderNonce"`` \| ``"strategyId"`` \| ``"collectionType"`` \| ``"collection"`` \| ``"currency"`` \| ``"amounts"``\> |
+
+#### Returns
+
+`Promise`\<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
+
+___
+
 ### createMakerAsk
 
-▸ **createMakerAsk**(`CreateMakerInput`): `Promise`<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
+▸ **createMakerAsk**(`CreateMakerInput`): `Promise`\<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
 
 Create a maker ask object ready to be signed
 
@@ -188,7 +206,7 @@ Create a maker ask object ready to be signed
 
 #### Returns
 
-`Promise`<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
+`Promise`\<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
 
 the maker object, isTransferManagerApproved, and isTransferManagerApproved
 
@@ -196,7 +214,7 @@ ___
 
 ### createMakerBid
 
-▸ **createMakerBid**(`CreateMakerInput`): `Promise`<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
+▸ **createMakerBid**(`CreateMakerInput`): `Promise`\<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
 
 Create a maker bid object ready to be signed
 
@@ -208,7 +226,7 @@ Create a maker bid object ready to be signed
 
 #### Returns
 
-`Promise`<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
+`Promise`\<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
 
 the maker object, isCurrencyApproved, and isBalanceSufficient
 
@@ -216,13 +234,9 @@ ___
 
 ### createMakerCollectionOffer
 
-▸ **createMakerCollectionOffer**(`orderInputs`): `Promise`<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
+▸ **createMakerCollectionOffer**(`orderInputs`): `Promise`\<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
 
 Create a maker bid for collection offer.
-
-**`See`**
-
-this.createMakerBid
 
 #### Parameters
 
@@ -232,21 +246,21 @@ this.createMakerBid
 
 #### Returns
 
-`Promise`<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
+`Promise`\<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
 
 CreateMakerBidOutput
+
+**`See`**
+
+this.createMakerBid
 
 ___
 
 ### createMakerCollectionOfferWithProof
 
-▸ **createMakerCollectionOfferWithProof**(`orderInputs`): `Promise`<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
+▸ **createMakerCollectionOfferWithProof**(`orderInputs`): `Promise`\<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
 
 Create a maker bid for collection, with a list of item id that can be used for the taker order
-
-**`See`**
-
-this.createMakerBid
 
 #### Parameters
 
@@ -256,9 +270,13 @@ this.createMakerBid
 
 #### Returns
 
-`Promise`<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
+`Promise`\<[`CreateMakerBidOutput`](../interfaces/types.CreateMakerBidOutput.md)\>
 
 CreateMakerBidOutput
+
+**`See`**
+
+this.createMakerBid
 
 ___
 
@@ -290,11 +308,6 @@ ___
 
 Create a taker ask order for collection order.
 
-**`See`**
-
- - this.createTaker
- - this.createMakerCollectionOffer
-
 #### Parameters
 
 | Name | Type | Description |
@@ -309,6 +322,11 @@ Create a taker ask order for collection order.
 
 Taker object
 
+**`See`**
+
+ - this.createTaker
+ - this.createMakerCollectionOffer
+
 ___
 
 ### createTakerCollectionOfferWithProof
@@ -316,11 +334,6 @@ ___
 ▸ **createTakerCollectionOfferWithProof**(`maker`, `itemId`, `itemIds`, `recipient?`): [`Taker`](../interfaces/types.Taker.md)
 
 Create a taker ask to fulfill a collection order (maker bid) created with a whitelist of item ids
-
-**`See`**
-
- - this.createTaker
- - this.createMakerCollectionOfferWithMerkleTree
 
 #### Parameters
 
@@ -337,22 +350,26 @@ Create a taker ask to fulfill a collection order (maker bid) created with a whit
 
 Taker object
 
+**`See`**
+
+ - this.createTaker
+ - this.createMakerCollectionOfferWithMerkleTree
+
 ___
 
 ### executeMultipleOrders
 
-▸ **executeMultipleOrders**(`orders`, `isAtomic`, `affiliate?`, `overrides?`): `Object`
+▸ **executeMultipleOrders**(`orders`, `isAtomic`, `overrides?`): `Object`
 
 Execute several orders
 
 #### Parameters
 
-| Name | Type | Default value | Description |
-| :------ | :------ | :------ | :------ |
-| `orders` | { `maker`: [`Maker`](../interfaces/types.Maker.md) ; `merkleTree?`: [`MerkleTree`](../interfaces/types.MerkleTree.md) ; `signature`: `string` ; `taker`: [`Taker`](../interfaces/types.Taker.md)  }[] | `undefined` | List of orders data |
-| `isAtomic` | `boolean` | `undefined` | Should the transaction revert or not if a trade fails |
-| `affiliate` | `string` | `ZeroAddress` | Affiliate address |
-| `overrides?` | `Overrides` | `undefined` | Call overrides |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `orders` | \{ `maker`: [`Maker`](../interfaces/types.Maker.md) ; `merkleTree?`: [`MerkleTree`](../interfaces/types.MerkleTree.md) ; `signature`: `string` ; `taker`: [`Taker`](../interfaces/types.Taker.md)  }[] | List of orders data |
+| `isAtomic` | `boolean` | Should the transaction revert or not if a trade fails |
+| `overrides?` | `Overrides` | Call overrides |
 
 #### Returns
 
@@ -362,15 +379,15 @@ ContractMethods
 
 | Name | Type |
 | :------ | :------ |
-| `call` | (`additionalOverrides?`: `PayableOverrides`) => `Promise`<`ContractTransactionResponse`\> |
-| `callStatic` | (`additionalOverrides?`: `PayableOverrides`) => `Promise`<`void`\> |
-| `estimateGas` | (`additionalOverrides?`: `PayableOverrides`) => `Promise`<`bigint`\> |
+| `call` | (`additionalOverrides?`: `PayableOverrides`) => `any` |
+| `callStatic` | (`additionalOverrides?`: `PayableOverrides`) => `any` |
+| `estimateGas` | (`additionalOverrides?`: `PayableOverrides`) => `any` |
 
 ___
 
 ### executeOrder
 
-▸ **executeOrder**(`maker`, `taker`, `signature`, `merkleTree?`, `affiliate?`, `overrides?`): [`ContractMethods`](../interfaces/types.ContractMethods.md)
+▸ **executeOrder**(`maker`, `taker`, `signature`, `merkleTree?`, `overrides?`): [`ContractMethods`](../interfaces/types.ContractMethods.md)
 
 Execute a trade
 
@@ -382,7 +399,6 @@ Execute a trade
 | `taker` | [`Taker`](../interfaces/types.Taker.md) | `undefined` | Taker order |
 | `signature` | `string` | `undefined` | Signature of the maker order |
 | `merkleTree` | [`MerkleTree`](../interfaces/types.MerkleTree.md) | `defaultMerkleTree` | If the maker has been signed with a merkle tree |
-| `affiliate` | `string` | `ZeroAddress` | Affiliate address if applicable |
 | `overrides?` | `Overrides` | `undefined` | - |
 
 #### Returns
@@ -427,10 +443,6 @@ ___
 
 Grant a list of operators the rights to transfer user's assets using the transfer manager
 
-**`Default Value`**
-
-Exchange address
-
 #### Parameters
 
 | Name | Type | Description |
@@ -443,6 +455,10 @@ Exchange address
 [`ContractMethods`](../interfaces/types.ContractMethods.md)
 
 ContractMethods
+
+**`Default Value`**
+
+Exchange address
 
 ___
 
@@ -468,7 +484,7 @@ ___
 
 ### isTransferManagerApproved
 
-▸ **isTransferManagerApproved**(`operator?`, `overrides?`): `Promise`<`boolean`\>
+▸ **isTransferManagerApproved**(`operator?`, `overrides?`): `Promise`\<`boolean`\>
 
 Check whether or not an operator has been approved by the user
 
@@ -481,9 +497,27 @@ Check whether or not an operator has been approved by the user
 
 #### Returns
 
-`Promise`<`boolean`\>
+`Promise`\<`boolean`\>
 
 true if the operator is approved, false otherwise
+
+___
+
+### registerOrder
+
+▸ **registerOrder**(`«destructured»`): `Promise`\<\{ `success`: `boolean`  }\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `«destructured»` | `Object` |
+| › `order` | [`Maker`](../interfaces/types.Maker.md) |
+| › `signature` | `string` |
+
+#### Returns
+
+`Promise`\<\{ `success`: `boolean`  }\>
 
 ___
 
@@ -492,10 +526,6 @@ ___
 ▸ **revokeTransferManagerApproval**(`operators?`, `overrides?`): [`ContractMethods`](../interfaces/types.ContractMethods.md)
 
 Revoke a list of operators the rights to transfer user's assets using the transfer manager
-
-**`Default Value`**
-
-Exchange address
 
 #### Parameters
 
@@ -510,11 +540,15 @@ Exchange address
 
 ContractMethods
 
+**`Default Value`**
+
+Exchange address
+
 ___
 
 ### signMakerOrder
 
-▸ **signMakerOrder**(`maker`): `Promise`<`string`\>
+▸ **signMakerOrder**(`maker`): `Promise`\<`string`\>
 
 Sign a maker order using the signer provided in the constructor
 
@@ -526,7 +560,7 @@ Sign a maker order using the signer provided in the constructor
 
 #### Returns
 
-`Promise`<`string`\>
+`Promise`\<`string`\>
 
 Signature
 
@@ -534,7 +568,7 @@ ___
 
 ### signMultipleMakerOrders
 
-▸ **signMultipleMakerOrders**(`makerOrders`): `Promise`<[`SignMerkleTreeOrdersOutput`](../interfaces/types.SignMerkleTreeOrdersOutput.md)\>
+▸ **signMultipleMakerOrders**(`makerOrders`): `Promise`\<[`SignMerkleTreeOrdersOutput`](../interfaces/types.SignMerkleTreeOrdersOutput.md)\>
 
 Sign multiple maker orders with a single signature
 /!\ Use this function for UI implementation only
@@ -547,7 +581,7 @@ Sign multiple maker orders with a single signature
 
 #### Returns
 
-`Promise`<[`SignMerkleTreeOrdersOutput`](../interfaces/types.SignMerkleTreeOrdersOutput.md)\>
+`Promise`\<[`SignMerkleTreeOrdersOutput`](../interfaces/types.SignMerkleTreeOrdersOutput.md)\>
 
 Signature, proofs, and Merkletree object
 
@@ -555,7 +589,7 @@ ___
 
 ### strategyInfo
 
-▸ **strategyInfo**(`strategyId`, `overrides?`): `Promise`<[`StrategyInfo`](../interfaces/types.StrategyInfo.md)\>
+▸ **strategyInfo**(`strategyId`, `overrides?`): `Promise`\<[`StrategyInfo`](../interfaces/types.StrategyInfo.md)\>
 
 Retrieve strategy info
 
@@ -568,7 +602,7 @@ Retrieve strategy info
 
 #### Returns
 
-`Promise`<[`StrategyInfo`](../interfaces/types.StrategyInfo.md)\>
+`Promise`\<[`StrategyInfo`](../interfaces/types.StrategyInfo.md)\>
 
 StrategyInfo
 
@@ -576,7 +610,7 @@ ___
 
 ### transferItemsAcrossCollection
 
-▸ **transferItemsAcrossCollection**(`to`, `collectionItems`, `overrides?`): `Promise`<[`ContractMethods`](../interfaces/types.ContractMethods.md)\>
+▸ **transferItemsAcrossCollection**(`to`, `collectionItems`, `overrides?`): `Promise`\<[`ContractMethods`](../interfaces/types.ContractMethods.md)\>
 
 Transfer a list of items across different collections
 
@@ -590,7 +624,7 @@ Transfer a list of items across different collections
 
 #### Returns
 
-`Promise`<[`ContractMethods`](../interfaces/types.ContractMethods.md)\>
+`Promise`\<[`ContractMethods`](../interfaces/types.ContractMethods.md)\>
 
 ContractMethods
 
@@ -598,7 +632,7 @@ ___
 
 ### verifyMakerOrders
 
-▸ **verifyMakerOrders**(`makerOrders`, `signatures`, `merkleTrees?`, `overrides?`): `Promise`<[`OrderValidatorCode`](../enums/types.OrderValidatorCode.md)[][]\>
+▸ **verifyMakerOrders**(`makerOrders`, `signatures`, `merkleTrees?`, `overrides?`): `Promise`\<[`OrderValidatorCode`](../enums/types.OrderValidatorCode.md)[][]\>
 
 Verify if a set of orders can be executed (i.e are valid)
 
@@ -613,6 +647,6 @@ Verify if a set of orders can be executed (i.e are valid)
 
 #### Returns
 
-`Promise`<[`OrderValidatorCode`](../enums/types.OrderValidatorCode.md)[][]\>
+`Promise`\<[`OrderValidatorCode`](../enums/types.OrderValidatorCode.md)[][]\>
 
 A list of OrderValidatorCode for each order (code 0 being valid)

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { AbiCoder, parseEther, verifyTypedData, TypedDataDomain } from "ethers";
 import { ethers } from "hardhat";
-import { LooksRare } from "../../LooksRare";
+import { HypercertExchangeClient } from "../../HypercertExchangeClient";
 import { setUpContracts, SetupMocks, getSigners, Signers } from "../helpers/setup";
 import { contractName, version } from "../../constants/eip712";
 import { MAX_ORDERS_PER_TREE } from "../../constants";
@@ -16,13 +16,13 @@ const faultySignature =
 describe("Sign maker orders", () => {
   let mocks: SetupMocks;
   let signers: Signers;
-  let lrUser1: LooksRare;
+  let lrUser1: HypercertExchangeClient;
   let domain: TypedDataDomain;
 
   beforeEach(async () => {
     mocks = await setUpContracts();
     signers = await getSigners();
-    lrUser1 = new LooksRare(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
+    lrUser1 = new HypercertExchangeClient(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
 
     domain = {
       name: contractName,

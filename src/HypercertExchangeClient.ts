@@ -32,6 +32,7 @@ import { verifyMakerOrders } from "./utils/calls/orderValidator";
 import { encodeParams, getTakerParamsTypes, getMakerParamsTypes } from "./utils/encodeOrderParams";
 import { setApprovalForAll, isApprovedForAll, allowance, approve, balanceOf } from "./utils/calls/tokens";
 import { strategyInfo } from "./utils/calls/strategies";
+import * as api from "./utils/api";
 import {
   ErrorMerkleTreeDepth,
   ErrorQuoteType,
@@ -59,16 +60,20 @@ import {
   StrategyType,
   StrategyInfo,
 } from "./types";
+import { fetchOrderNonce } from "./utils/api";
 
 /**
  * LooksRare
  * This class provides helpers to interact with the LooksRare V2 contracts
  */
-export class LooksRare {
+export class HypercertExchangeClient {
   /** Current app chain ID */
   public readonly chainId: ChainId;
   /** Mapping of LooksRare protocol addresses for the current chain */
   public readonly addresses: Addresses;
+
+  public readonly api: typeof api;
+
   /**
    * Ethers signer
    * @see {@link https://docs.ethers.org/v6/api/providers/#Signer Ethers signer doc}
@@ -92,6 +97,7 @@ export class LooksRare {
     this.addresses = override ?? addressesByNetwork[this.chainId];
     this.signer = signer;
     this.provider = provider;
+    this.api = api;
   }
 
   /**
@@ -611,5 +617,78 @@ export class LooksRare {
    */
   public async strategyInfo(strategyId: StrategyType, overrides?: Overrides): Promise<StrategyInfo> {
     return strategyInfo(this.provider, this.addresses.EXCHANGE_V2, strategyId, overrides);
+  }
+
+  /**
+   * Create a maker ask for a collection or singular offer of fractions
+   * @param itemIds Token IDs of the fractions to be sold
+   * @param price Price of the fractions in wei
+   * @param startTime Timestamp in seconds when the order becomes valid
+   * @param endTime Timestamp in seconds when the order becomes invalid
+   * @param additionalParameters Additional parameters used to support complex orders
+   */
+  public async createDirectFractionsSaleMakerAsk({
+    itemIds,
+    price,
+    startTime,
+    endTime,
+    additionalParameters = [],
+  }: Omit<
+    CreateMakerInput,
+    "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts" | "currency"
+  >): Promise<CreateMakerAskOutput> {
+    const address = await this.signer?.getAddress();
+
+    if (!address) {
+      throw new Error("No signer address could be determined");
+    }
+
+    const chainId = this.chainId;
+
+    const { nonce_counter } = await fetchOrderNonce({
+      address,
+      chainId,
+    });
+
+    const amounts = Array.from({ length: itemIds.length }, () => 1);
+
+    return this.createMakerAsk({
+      // Defaults
+      strategyId: StrategyType.standard,
+      collectionType: 2,
+      collection: this.addresses.MINTER,
+      subsetNonce: 0,
+      currency: this.addresses.WETH,
+      amounts,
+      orderNonce: nonce_counter.toString(),
+      // User specified
+      itemIds,
+      price,
+      startTime,
+      endTime,
+      additionalParameters,
+    });
+  }
+
+  /**
+   * Register the order with hypercerts marketplace API.
+   * @param order Maker order
+   * @param signature Signature of the maker order
+   */
+  public async registerOrder({ order, signature }: { order: Maker; signature: string }) {
+    const address = await this.signer?.getAddress();
+    if (!address) {
+      throw new Error("No signer address could be determined");
+    }
+
+    const chainId = this.chainId;
+
+    return api.registerOrder({
+      order,
+      signer: address,
+      signature,
+      quoteType: order.quoteType,
+      chainId,
+    });
   }
 }

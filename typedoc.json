@@ -1,5 +1,5 @@
 {
-  "entryPoints": ["./src/LooksRare.ts", "./src/types.ts"],
+  "entryPoints": ["./src/HypercertExchangeClient.ts", "./src/types.ts"],
   "out": "./doc",
   "githubPages": false,
   "readme": "none",
