@@ -12,6 +12,11 @@ export const supabaseHypercerts = createClient<HypercertsDatabase>(
   SUPABASE_HYPERCERTS_ANON_KEY!
 );
 
+/**
+ * Fetches order nonce from api
+ * @param address Address
+ * @param chainId Chain ID
+ */
 export const fetchOrderNonce = async ({ address, chainId }: { address: string; chainId: number }) => {
   return fetch(`${HYPERCERTS_MARKETPLACE_API_URL}/marketplace/order-nonce/`, {
     method: "POST",
@@ -32,6 +37,14 @@ export const fetchOrderNonce = async ({ address, chainId }: { address: string; c
     .then((res) => res.data);
 };
 
+/**
+ * Registers order in api
+ * @param order Order
+ * @param signer Signer
+ * @param signature Signature
+ * @param quoteType Quote type
+ * @param chainId Chain ID
+ */
 export const registerOrder = async ({
   order,
   signer,
@@ -64,6 +77,11 @@ export const registerOrder = async ({
   }).then((res) => res.json() as Promise<{ success: boolean }>);
 };
 
+/**
+ * Fetches orders from api by hypercert ID
+ * @param hypercertId Hypercert ID
+ * @param chainId Chain ID
+ */
 export const fetchOrdersByHypercertId = async ({ hypercertId, chainId }: { hypercertId: string; chainId: number }) => {
   const hypercertsClient = new HypercertClient({
     chain: { id: chainId },
