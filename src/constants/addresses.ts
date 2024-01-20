@@ -14,4 +14,5 @@ const sepoliaAddresses: Addresses = {
  */
 export const addressesByNetwork: { [chainId in ChainId]: Addresses } = {
   [ChainId.SEPOLIA]: sepoliaAddresses,
+  [ChainId.HARDHAT]: sepoliaAddresses,
 };

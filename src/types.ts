@@ -13,6 +13,7 @@ export interface Addresses {
 /** List of supported chains */
 export enum ChainId {
   SEPOLIA = 11155111,
+  HARDHAT = 31337,
 }
 
 /** ChainInfo data used to interact with LooksRare ecosystem */

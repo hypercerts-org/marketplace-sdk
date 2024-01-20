@@ -2,6 +2,8 @@ import "@nomicfoundation/hardhat-ethers";
 import "@typechain/hardhat";
 import "hardhat-abi-exporter";
 
+require("dotenv").config({ path: __dirname + "/.env.test" });
+
 const config = {
   defaultNetwork: "hardhat",
   networks: {
