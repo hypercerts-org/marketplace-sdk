@@ -13,6 +13,9 @@ export const getMakerParamsTypes = (strategy: StrategyType): SolidityType[] => {
   if (strategy === StrategyType.collectionWithMerkleTree) {
     return ["bytes32"]; // Merkle tree root
   }
+  if (strategy === StrategyType.hypercertFractionOffer) {
+    return ["uint256", "uint256"]; // Fraction id, amount
+  }
   return [];
 };
 

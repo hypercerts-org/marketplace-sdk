@@ -670,6 +670,74 @@ export class HypercertExchangeClient {
     });
   }
 
+  public async createFractionalSaleMakerAsk({
+    itemIds,
+    price,
+    startTime,
+    endTime,
+    unitAmount,
+    pricePerUnit,
+    proof,
+  }: Omit<
+    CreateMakerInput,
+    | "strategyId"
+    | "collectionType"
+    | "collection"
+    | "subsetNonce"
+    | "orderNonce"
+    | "amounts"
+    | "currency"
+    | "additionalParameters"
+  > & {
+    unitAmount: BigNumberish;
+    pricePerUnit: BigNumberish;
+    proof?: `0x${string}[]`;
+  }): Promise<CreateMakerAskOutput> {
+    const address = await this.signer?.getAddress();
+
+    if (!address) {
+      throw new Error("No signer address could be determined");
+    }
+
+    const chainId = this.chainId;
+
+    const { nonce_counter } = await fetchOrderNonce({
+      address,
+      chainId,
+    });
+
+    const amounts = Array.from({ length: itemIds.length }, () => 1);
+
+    const sharedArgs = {
+      // Defaults
+      collectionType: 2,
+      collection: this.addresses.MINTER,
+      subsetNonce: 0,
+      currency: this.addresses.WETH,
+      amounts,
+      orderNonce: nonce_counter.toString(),
+      // User specified
+      itemIds,
+      price,
+      startTime,
+      endTime,
+    };
+
+    if (proof) {
+      return this.createMakerAsk({
+        ...sharedArgs,
+        strategyId: StrategyType.hypercertFractionOfferWithAllowlist,
+        additionalParameters: [unitAmount, pricePerUnit, proof],
+      });
+    }
+
+    return this.createMakerAsk({
+      ...sharedArgs,
+      strategyId: StrategyType.hypercertFractionOffer,
+      additionalParameters: [unitAmount, pricePerUnit],
+    });
+  }
+
   /**
    * Register the order with hypercerts marketplace API.
    * @param order Maker order
