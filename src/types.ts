@@ -39,6 +39,14 @@ export enum StrategyType {
   standard = 0,
   collection = 1,
   collectionWithMerkleTree = 2,
+  dutchAuction = 4,
+  itemIdsRange = 5,
+  hypercertCollectionOffer = 6,
+  hypercertCollectionOfferWithProof = 7,
+  hypercertCollectionOfferWithAllowlist = 8,
+  hypercertDutchAuction = 9,
+  hypercertFractionOffer = 10,
+  hypercertFractionOfferWithAllowlist = 11,
 }
 
 /** Type for maker order */
