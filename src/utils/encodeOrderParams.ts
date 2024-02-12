@@ -14,7 +14,10 @@ export const getMakerParamsTypes = (strategy: StrategyType): SolidityType[] => {
     return ["bytes32"]; // Merkle tree root
   }
   if (strategy === StrategyType.hypercertFractionOffer) {
-    return ["uint256", "uint256"]; // Fraction id, amount
+    return ["uint256", "uint256", "uint256", "bool"]; //  minUnitAmount, maxUnitAmount, minUnitsToKeep, sellLeftoverFraction
+  }
+  if (strategy === StrategyType.hypercertFractionOfferWithAllowlist) {
+    return ["uint256", "uint256", "uint256", "bool", "bytes32"]; //  minUnitAmount, maxUnitAmount, minUnitsToKeep, sellLeftoverFraction, root
   }
   return [];
 };
@@ -33,6 +36,12 @@ export const getTakerParamsTypes = (strategy: StrategyType): SolidityType[] => {
   }
   if (strategy === StrategyType.collectionWithMerkleTree) {
     return ["uint256", "bytes32[]"]; // Item id, merkle proof
+  }
+  if (strategy === StrategyType.hypercertFractionOffer) {
+    return ["uint256", "uint256"]; // unitAmount, pricePerUnit
+  }
+  if (strategy === StrategyType.hypercertFractionOfferWithAllowlist) {
+    return ["uint256", "uint256", "bytes32[]"]; // unitAmount, pricePerUnit, proof
   }
   return [];
 };

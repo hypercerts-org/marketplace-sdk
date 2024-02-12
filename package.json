@@ -91,7 +91,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@hypercerts-org/sdk": "^1.4.1",
+    "@hypercerts-org/sdk": "1.4.2-alpha.2",
     "@supabase/supabase-js": "^2.39.2",
     "ethers": "^6.6.2",
     "merkletreejs": "^0.3.9"

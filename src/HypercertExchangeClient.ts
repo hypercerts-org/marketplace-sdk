@@ -3,64 +3,64 @@ import {
   ContractTransactionResponse,
   MaxUint256,
   Overrides,
+  Provider,
+  Signer,
   solidityPackedKeccak256,
   TypedDataDomain,
   ZeroAddress,
-  Provider,
-  Signer,
 } from "ethers";
 import { MerkleTree as MerkleTreeJS } from "merkletreejs";
 import { keccak256 } from "js-sha3";
 import { addressesByNetwork } from "./constants/addresses";
 import { contractName, version } from "./constants/eip712";
-import { MAX_ORDERS_PER_TREE, defaultMerkleTree } from "./constants";
+import { defaultMerkleTree, MAX_ORDERS_PER_TREE } from "./constants";
 import { signMakerOrder, signMerkleTreeOrders } from "./utils/signMakerOrders";
 import {
-  incrementBidAskNonces,
   cancelOrderNonces,
   cancelSubsetNonces,
+  incrementBidAskNonces,
   viewUserBidAskNonces,
 } from "./utils/calls/nonces";
-import { executeTakerAsk, executeTakerBid, executeMultipleTakerBids } from "./utils/calls/exchange";
+import { executeMultipleTakerBids, executeTakerAsk, executeTakerBid } from "./utils/calls/exchange";
 import {
-  transferBatchItemsAcrossCollections,
   grantApprovals,
-  revokeApprovals,
   hasUserApprovedOperator,
+  revokeApprovals,
+  transferBatchItemsAcrossCollections,
 } from "./utils/calls/transferManager";
 import { verifyMakerOrders } from "./utils/calls/orderValidator";
-import { encodeParams, getTakerParamsTypes, getMakerParamsTypes } from "./utils/encodeOrderParams";
-import { setApprovalForAll, isApprovedForAll, allowance, approve, balanceOf } from "./utils/calls/tokens";
+import { encodeParams, getMakerParamsTypes, getTakerParamsTypes } from "./utils/encodeOrderParams";
+import { allowance, approve, balanceOf, isApprovedForAll, setApprovalForAll } from "./utils/calls/tokens";
 import { strategyInfo } from "./utils/calls/strategies";
 import * as api from "./utils/api";
+import { fetchOrderNonce } from "./utils/api";
 import {
+  ErrorItemId,
   ErrorMerkleTreeDepth,
   ErrorQuoteType,
   ErrorSigner,
-  ErrorTimestamp,
   ErrorStrategyType,
-  ErrorItemId,
+  ErrorTimestamp,
 } from "./errors";
 import {
   Addresses,
-  Maker,
-  Taker,
+  BatchTransferItem,
   ChainId,
-  CreateMakerInput,
+  ContractMethods,
   CreateMakerAskOutput,
   CreateMakerBidOutput,
   CreateMakerCollectionOfferInput,
   CreateMakerCollectionOfferWithProofInput,
+  CreateMakerInput,
+  Maker,
   MerkleTree,
-  ContractMethods,
   OrderValidatorCode,
-  BatchTransferItem,
   QuoteType,
   SignMerkleTreeOrdersOutput,
-  StrategyType,
   StrategyInfo,
+  StrategyType,
+  Taker,
 } from "./types";
-import { fetchOrderNonce } from "./utils/api";
 
 /**
  * LooksRare
@@ -301,18 +301,17 @@ export class HypercertExchangeClient {
    * @returns Taker object
    */
   public createTaker(maker: Maker, recipient: string = ZeroAddress, additionalParameters: any[] = []): Taker {
-    const order: Taker = {
+    return {
       recipient: recipient,
       additionalParameters: encodeParams(additionalParameters, getTakerParamsTypes(maker.strategyId)),
     };
-    return order;
   }
 
   /**
    * Create a taker ask order for collection order.
    * @see this.createTaker
    * @see this.createMakerCollectionOffer
-   * @param makerBid Maker bid that will be used as counterparty for the taker
+   * @param maker Maker bid that will be used as counterparty for the taker
    * @param itemId Token id to use as a counterparty for the collection order
    * @param recipient Recipient address of the taker (if none, it will use the sender)
    * @returns Taker object
@@ -331,7 +330,7 @@ export class HypercertExchangeClient {
    * Create a taker ask to fulfill a collection order (maker bid) created with a whitelist of item ids
    * @see this.createTaker
    * @see this.createMakerCollectionOfferWithMerkleTree
-   * @param makerBid Maker bid that will be used as counterparty for the taker
+   * @param maker Maker bid that will be used as counterparty for the taker
    * @param itemId Token id to use as a counterparty for the collection order
    * @param itemIds List of token ids used during the maker creation
    * @param recipient Recipient address of the taker (if none, it will use the sender)
@@ -371,6 +370,7 @@ export class HypercertExchangeClient {
    */
   public async signMakerOrder(maker: Maker): Promise<string> {
     const signer = this.getSigner();
+    console.log("signing against", this.getTypedDataDomain(), maker);
     return await signMakerOrder(signer, this.getTypedDataDomain(), maker);
   }
 
@@ -390,11 +390,10 @@ export class HypercertExchangeClient {
 
   /**
    * Execute a trade
-   * @param makerBid Maker order
+   * @param maker Maker order
    * @param taker Taker order
    * @param signature Signature of the maker order
    * @param merkleTree If the maker has been signed with a merkle tree
-   * @param affiliate Affiliate address if applicable
    * @returns ContractMethods
    */
   public executeOrder(
@@ -413,7 +412,6 @@ export class HypercertExchangeClient {
    * Execute several orders
    * @param orders List of orders data
    * @param isAtomic Should the transaction revert or not if a trade fails
-   * @param affiliate Affiliate address
    * @param overrides Call overrides
    * @returns ContractMethods
    */
@@ -625,6 +623,7 @@ export class HypercertExchangeClient {
    * @param price Price of the fractions in wei
    * @param startTime Timestamp in seconds when the order becomes valid
    * @param endTime Timestamp in seconds when the order becomes invalid
+   * @param currency Currency used to buy the fractions (default to WETH)
    * @param additionalParameters Additional parameters used to support complex orders
    */
   public async createDirectFractionsSaleMakerAsk({
@@ -632,10 +631,11 @@ export class HypercertExchangeClient {
     price,
     startTime,
     endTime,
+    currency = this.addresses.WETH,
     additionalParameters = [],
   }: Omit<
     CreateMakerInput,
-    "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts" | "currency"
+    "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts"
   >): Promise<CreateMakerAskOutput> {
     const address = await this.signer?.getAddress();
 
@@ -658,7 +658,7 @@ export class HypercertExchangeClient {
       collectionType: 2,
       collection: this.addresses.MINTER,
       subsetNonce: 0,
-      currency: this.addresses.WETH,
+      currency,
       amounts,
       orderNonce: nonce_counter.toString(),
       // User specified
@@ -670,28 +670,39 @@ export class HypercertExchangeClient {
     });
   }
 
+  /**
+   * Create a maker ask to let the buyer decide how much of the fraction they want to buy
+   * @param itemIds Token IDs of the fractions to be sold
+   * @param price Price of one unit in wei
+   * @param startTime Timestamp in seconds when the order becomes valid
+   * @param endTime Timestamp in seconds when the order becomes invalid
+   * @param currency Currency used to buy the fractions (default to WETH)
+   * @param maxUnitAmount Maximum amount of units that can be bought in a single transaction
+   * @param minUnitAmount Minimum amount of units that can be bought in a single transaction
+   * @param minUnitsToKeep Minimum amount of units that the seller wants to keep
+   * @param sellLeftoverFraction Whether or not the seller wants to sell the leftover units
+   * @param root Merkle tree root (optional)
+   */
   public async createFractionalSaleMakerAsk({
     itemIds,
     price,
     startTime,
     endTime,
-    unitAmount,
-    pricePerUnit,
-    proof,
+    currency = this.addresses.WETH,
+    maxUnitAmount,
+    minUnitAmount,
+    minUnitsToKeep,
+    sellLeftoverFraction,
+    root,
   }: Omit<
     CreateMakerInput,
-    | "strategyId"
-    | "collectionType"
-    | "collection"
-    | "subsetNonce"
-    | "orderNonce"
-    | "amounts"
-    | "currency"
-    | "additionalParameters"
+    "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts" | "additionalParameters"
   > & {
-    unitAmount: BigNumberish;
-    pricePerUnit: BigNumberish;
-    proof?: `0x${string}[]`;
+    minUnitAmount: BigNumberish;
+    maxUnitAmount: BigNumberish;
+    minUnitsToKeep: BigNumberish;
+    sellLeftoverFraction: boolean;
+    root?: string;
   }): Promise<CreateMakerAskOutput> {
     const address = await this.signer?.getAddress();
 
@@ -713,7 +724,7 @@ export class HypercertExchangeClient {
       collectionType: 2,
       collection: this.addresses.MINTER,
       subsetNonce: 0,
-      currency: this.addresses.WETH,
+      currency,
       amounts,
       orderNonce: nonce_counter.toString(),
       // User specified
@@ -723,19 +734,38 @@ export class HypercertExchangeClient {
       endTime,
     };
 
-    if (proof) {
+    if (root) {
       return this.createMakerAsk({
         ...sharedArgs,
         strategyId: StrategyType.hypercertFractionOfferWithAllowlist,
-        additionalParameters: [unitAmount, pricePerUnit, proof],
+        additionalParameters: [minUnitAmount, maxUnitAmount, minUnitsToKeep, sellLeftoverFraction, root],
       });
     }
 
     return this.createMakerAsk({
       ...sharedArgs,
       strategyId: StrategyType.hypercertFractionOffer,
-      additionalParameters: [unitAmount, pricePerUnit],
+      additionalParameters: [minUnitAmount, maxUnitAmount, minUnitsToKeep, sellLeftoverFraction],
     });
+  }
+
+  /**
+   * Create a taker bid for buying a fraction of an open fractional sale
+   * @param maker Maker order
+   * @param recipient Recipient address of the taker (if none, it will use the sender)
+   * @param unitAmount Amount of units to buy
+   * @param pricePerUnit Price per unit in wei
+   */
+  public createFractionalSaleTakerBid(
+    maker: Maker,
+    recipient: string = ZeroAddress,
+    unitAmount: BigNumberish,
+    pricePerUnit: BigNumberish
+  ): Taker {
+    return {
+      recipient: recipient,
+      additionalParameters: encodeParams([unitAmount, pricePerUnit], getTakerParamsTypes(maker.strategyId)),
+    };
   }
 
   /**
