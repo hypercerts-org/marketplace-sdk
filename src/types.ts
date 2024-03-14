@@ -1,7 +1,7 @@
 import { BigNumberish, BytesLike, Overrides, TypedDataField, ContractTransactionResponse } from "ethers";
 import { Eip712MakerMerkleTree } from "./utils/Eip712MakerMerkleTree";
 
-/** Addresses used to create a LooksRare instance */
+/** Addresses used to create a HypercertExchange instance */
 export interface Addresses {
   EXCHANGE_V2: `0x${string}`;
   TRANSFER_MANAGER_V2: `0x${string}`;
@@ -16,7 +16,7 @@ export enum ChainId {
   HARDHAT = 31337,
 }
 
-/** ChainInfo data used to interact with LooksRare ecosystem */
+/** ChainInfo data used to interact with HypercertExchange ecosystem */
 export interface ChainInfo {
   label: string;
   appUrl: string;
@@ -122,7 +122,7 @@ export interface CreateMakerInput {
   collectionType: CollectionType;
   /** Subset nonce used to group an arbitrary number of orders under the same nonce */
   subsetNonce: BigNumberish;
-  /** Order nonce, get it from the LooksRare api */
+  /** Order nonce, get it from the HypercertExchange api */
   orderNonce: BigNumberish;
   /** Timestamp in seconds when the order becomes invalid */
   endTime: BigNumberish;

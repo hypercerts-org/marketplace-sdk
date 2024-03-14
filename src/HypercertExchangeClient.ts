@@ -63,13 +63,13 @@ import {
 } from "./types";
 
 /**
- * LooksRare
- * This class provides helpers to interact with the LooksRare V2 contracts
+ * HypercertExchange
+ * This class provides helpers to interact with the HypercertExchange V2 contracts
  */
 export class HypercertExchangeClient {
   /** Current app chain ID */
   public readonly chainId: ChainId;
-  /** Mapping of LooksRare protocol addresses for the current chain */
+  /** Mapping of Hypercert protocol addresses for the current chain */
   public readonly addresses: Addresses;
 
   public readonly api: typeof api;
@@ -86,7 +86,7 @@ export class HypercertExchangeClient {
   public readonly provider: Provider;
 
   /**
-   * LooksRare protocol main class
+   * HypercertExchange protocol main class
    * @param chainId Current app chain id
    * @param provider Ethers provider
    * @param signer Ethers signer
@@ -486,7 +486,7 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Approve all the items of a collection, to eventually be traded on LooksRare
+   * Approve all the items of a collection, to eventually be traded on HypercertExchange
    * The spender is the TransferManager.
    * @param collectionAddress Address of the collection to be approved.
    * @param approved true to approve, false to revoke the approval (default to true)
@@ -503,8 +503,8 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Approve an ERC20 to be used as a currency on LooksRare.
-   * The spender is the LooksRareProtocol contract.
+   * Approve an ERC20 to be used as a currency on HypercertExchange.
+   * The spender is the HypercertExchangeProtocol contract.
    * @param tokenAddress Address of the ERC20 to approve
    * @param amount Amount to be approved (default to MaxUint256)
    * @returns ContractTransaction

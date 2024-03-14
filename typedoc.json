@@ -3,7 +3,7 @@
   "out": "./doc",
   "githubPages": false,
   "readme": "none",
-  "gitRemote": "https://github.com/LooksRare/sdk-v2",
+  "gitRemote": "https://github.com/hypercerts-org/marketplace-sdk",
   "disableSources": true,
 
   // typedoc-plugin-markdown
