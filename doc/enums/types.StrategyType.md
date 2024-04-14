@@ -18,6 +18,54 @@ ___
 
 ___
 
+### dutchAuction
+
+• **dutchAuction** = ``4``
+
+___
+
+### hypercertCollectionOffer
+
+• **hypercertCollectionOffer** = ``6``
+
+___
+
+### hypercertCollectionOfferWithAllowlist
+
+• **hypercertCollectionOfferWithAllowlist** = ``8``
+
+___
+
+### hypercertCollectionOfferWithProof
+
+• **hypercertCollectionOfferWithProof** = ``7``
+
+___
+
+### hypercertDutchAuction
+
+• **hypercertDutchAuction** = ``9``
+
+___
+
+### hypercertFractionOffer
+
+• **hypercertFractionOffer** = ``10``
+
+___
+
+### hypercertFractionOfferWithAllowlist
+
+• **hypercertFractionOfferWithAllowlist** = ``11``
+
+___
+
+### itemIdsRange
+
+• **itemIdsRange** = ``5``
+
+___
+
 ### standard
 
 • **standard** = ``0``

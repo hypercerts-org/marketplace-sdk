@@ -78,7 +78,7 @@ ___
 
 • **orderNonce**: `BigNumberish`
 
-Order nonce, get it from the LooksRare api
+Order nonce, get it from the HypercertExchange api
 
 ___
 

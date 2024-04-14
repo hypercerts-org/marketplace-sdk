@@ -2,7 +2,7 @@
 
 [types](../modules/types.md).Addresses
 
-Addresses used to create a LooksRare instance
+Addresses used to create a HypercertExchange instance
 
 ## Properties
 

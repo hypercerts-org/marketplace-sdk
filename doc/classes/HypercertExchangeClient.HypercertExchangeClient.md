@@ -2,8 +2,8 @@
 
 [HypercertExchangeClient](../modules/HypercertExchangeClient.md).HypercertExchangeClient
 
-LooksRare
-This class provides helpers to interact with the LooksRare V2 contracts
+HypercertExchange
+This class provides helpers to interact with the HypercertExchange V2 contracts
 
 ## Constructors
 
@@ -11,13 +11,13 @@ This class provides helpers to interact with the LooksRare V2 contracts
 
 • **new HypercertExchangeClient**(`chainId`, `provider`, `signer?`, `override?`)
 
-LooksRare protocol main class
+HypercertExchange protocol main class
 
 #### Parameters
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `chainId` | [`SEPOLIA`](../enums/types.ChainId.md#sepolia) | Current app chain id |
+| `chainId` | [`ChainId`](../enums/types.ChainId.md) | Current app chain id |
 | `provider` | `Provider` | Ethers provider |
 | `signer?` | `Signer` | Ethers signer |
 | `override?` | [`Addresses`](../interfaces/types.Addresses.md) | Overrides contract addresses for hardhat setup |
@@ -28,13 +28,19 @@ LooksRare protocol main class
 
 • `Readonly` **addresses**: [`Addresses`](../interfaces/types.Addresses.md)
 
-Mapping of LooksRare protocol addresses for the current chain
+Mapping of Hypercert protocol addresses for the current chain
+
+___
+
+### api
+
+• `Readonly` **api**: `__module`
 
 ___
 
 ### chainId
 
-• `Readonly` **chainId**: [`SEPOLIA`](../enums/types.ChainId.md#sepolia)
+• `Readonly` **chainId**: [`ChainId`](../enums/types.ChainId.md)
 
 Current app chain ID
 
@@ -68,7 +74,7 @@ Ethers signer
 
 ▸ **approveAllCollectionItems**(`collectionAddress`, `approved?`, `overrides?`): `Promise`\<`ContractTransactionResponse`\>
 
-Approve all the items of a collection, to eventually be traded on LooksRare
+Approve all the items of a collection, to eventually be traded on HypercertExchange
 The spender is the TransferManager.
 
 #### Parameters
@@ -91,8 +97,8 @@ ___
 
 ▸ **approveErc20**(`tokenAddress`, `amount?`, `overrides?`): `Promise`\<`ContractTransactionResponse`\>
 
-Approve an ERC20 to be used as a currency on LooksRare.
-The spender is the LooksRareProtocol contract.
+Approve an ERC20 to be used as a currency on HypercertExchange.
+The spender is the HypercertExchangeProtocol contract.
 
 #### Parameters
 
@@ -184,11 +190,50 @@ Create a maker ask for a collection or singular offer of fractions
 
 | Name | Type |
 | :------ | :------ |
-| `«destructured»` | `Omit`\<[`CreateMakerInput`](../interfaces/types.CreateMakerInput.md), ``"subsetNonce"`` \| ``"orderNonce"`` \| ``"strategyId"`` \| ``"collectionType"`` \| ``"collection"`` \| ``"currency"`` \| ``"amounts"``\> |
+| `«destructured»` | `Omit`\<[`CreateMakerInput`](../interfaces/types.CreateMakerInput.md), ``"subsetNonce"`` \| ``"orderNonce"`` \| ``"strategyId"`` \| ``"collectionType"`` \| ``"collection"`` \| ``"amounts"``\> |
 
 #### Returns
 
 `Promise`\<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
+
+___
+
+### createFractionalSaleMakerAsk
+
+▸ **createFractionalSaleMakerAsk**(`«destructured»`): `Promise`\<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
+
+Create a maker ask to let the buyer decide how much of the fraction they want to buy
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `«destructured»` | `Omit`\<[`CreateMakerInput`](../interfaces/types.CreateMakerInput.md), ``"subsetNonce"`` \| ``"orderNonce"`` \| ``"strategyId"`` \| ``"collectionType"`` \| ``"collection"`` \| ``"amounts"`` \| ``"additionalParameters"``\> & \{ `maxUnitAmount`: `BigNumberish` ; `minUnitAmount`: `BigNumberish` ; `minUnitsToKeep`: `BigNumberish` ; `root?`: `string` ; `sellLeftoverFraction`: `boolean`  } |
+
+#### Returns
+
+`Promise`\<[`CreateMakerAskOutput`](../interfaces/types.CreateMakerAskOutput.md)\>
+
+___
+
+### createFractionalSaleTakerBid
+
+▸ **createFractionalSaleTakerBid**(`maker`, `recipient?`, `unitAmount`, `pricePerUnit`): [`Taker`](../interfaces/types.Taker.md)
+
+Create a taker bid for buying a fraction of an open fractional sale
+
+#### Parameters
+
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `maker` | [`Maker`](../interfaces/types.Maker.md) | `undefined` | Maker order |
+| `recipient` | `string` | `ZeroAddress` | Recipient address of the taker (if none, it will use the sender) |
+| `unitAmount` | `BigNumberish` | `undefined` | Amount of units to buy |
+| `pricePerUnit` | `BigNumberish` | `undefined` | Price per unit in wei |
+
+#### Returns
+
+[`Taker`](../interfaces/types.Taker.md)
 
 ___
 
@@ -312,7 +357,7 @@ Create a taker ask order for collection order.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `maker` | [`Maker`](../interfaces/types.Maker.md) | - |
+| `maker` | [`Maker`](../interfaces/types.Maker.md) | Maker bid that will be used as counterparty for the taker |
 | `itemId` | `BigNumberish` | Token id to use as a counterparty for the collection order |
 | `recipient?` | `string` | Recipient address of the taker (if none, it will use the sender) |
 
@@ -339,7 +384,7 @@ Create a taker ask to fulfill a collection order (maker bid) created with a whit
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `maker` | [`Maker`](../interfaces/types.Maker.md) | - |
+| `maker` | [`Maker`](../interfaces/types.Maker.md) | Maker bid that will be used as counterparty for the taker |
 | `itemId` | `BigNumberish` | Token id to use as a counterparty for the collection order |
 | `itemIds` | `BigNumberish`[] | List of token ids used during the maker creation |
 | `recipient?` | `string` | Recipient address of the taker (if none, it will use the sender) |
@@ -395,7 +440,7 @@ Execute a trade
 
 | Name | Type | Default value | Description |
 | :------ | :------ | :------ | :------ |
-| `maker` | [`Maker`](../interfaces/types.Maker.md) | `undefined` | - |
+| `maker` | [`Maker`](../interfaces/types.Maker.md) | `undefined` | Maker order |
 | `taker` | [`Taker`](../interfaces/types.Taker.md) | `undefined` | Taker order |
 | `signature` | `string` | `undefined` | Signature of the maker order |
 | `merkleTree` | [`MerkleTree`](../interfaces/types.MerkleTree.md) | `defaultMerkleTree` | If the maker has been signed with a merkle tree |
@@ -506,6 +551,8 @@ ___
 ### registerOrder
 
 ▸ **registerOrder**(`«destructured»`): `Promise`\<\{ `success`: `boolean`  }\>
+
+Register the order with hypercerts marketplace API.
 
 #### Parameters
 

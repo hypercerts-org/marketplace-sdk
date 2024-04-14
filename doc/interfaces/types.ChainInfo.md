@@ -2,7 +2,7 @@
 
 [types](../modules/types.md).ChainInfo
 
-ChainInfo data used to interact with LooksRare ecosystem
+ChainInfo data used to interact with HypercertExchange ecosystem
 
 ## Properties
 
