@@ -33,6 +33,7 @@ const { maker, isCollectionApproved, isTransferManagerApproved } =
     endTime: Math.floor(Date.now() / 1000) + 86400, // If you use a timestamp in ms, the function will revert
     price: parseEther(listing.price), // Be careful to use a price in wei, this example is for 1 ETH
     itemIds: [tokenId.toString()], // Token id of the NFT(s) you want to sell, add several ids to create a bundle
+    currency: "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9", // Defaults to WETH
   });
 
 // Grant the TransferManager the right the transfer assets on behalf od the LooksRareProtocol
@@ -60,6 +61,8 @@ await hypercertExchangeClient.registerOrder({
   signature,
 });
 ```
+
+Note that not all currencies are available by default. If you would like to use a currency that is not whitelisted yet, contact the hypercerts team.
 
 ## Listing existing orders
 
