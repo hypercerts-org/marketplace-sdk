@@ -1,12 +1,13 @@
 {
+  "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["./src/HypercertExchangeClient.ts", "./src/types.ts"],
   "out": "./doc",
   "githubPages": false,
   "readme": "none",
   "gitRemote": "https://github.com/hypercerts-org/marketplace-sdk",
   "disableSources": true,
+  "cleanOutputDir": false,
 
-  // typedoc-plugin-markdown
   "hideBreadcrumbs": true,
   "hideInPageTOC": true
 }
