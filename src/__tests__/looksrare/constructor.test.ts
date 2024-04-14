@@ -13,7 +13,7 @@ describe("LooksRare class", () => {
     signers = await getSigners();
   });
   it("instanciate LooksRare object with a signer", () => {
-    expect(new HypercertExchangeClient(1, ethers.provider, signers.user1).chainId).to.equal(1);
+    expect(new HypercertExchangeClient(1 as ChainId, ethers.provider, signers.user1).chainId).to.equal(1);
     expect(new HypercertExchangeClient(ChainId.HARDHAT, ethers.provider, signers.user1).chainId).to.equal(
       ChainId.HARDHAT
     );

@@ -1,6 +1,6 @@
 {
   "name": "@hypercerts-org/marketplace-sdk",
-  "version": "0.1.0",
+  "version": "0.1.6",
   "license": "MIT",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -91,7 +91,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@hypercerts-org/sdk": "1.4.3",
+    "@hypercerts-org/sdk": "2.0.0-alpha.5",
     "@supabase/supabase-js": "^2.39.2",
     "ethers": "^6.6.2",
     "merkletreejs": "^0.3.9"

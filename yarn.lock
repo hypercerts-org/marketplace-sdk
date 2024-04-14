@@ -892,26 +892,28 @@
   dependencies:
     hardhat "^2.18.3"
 
-"@hypercerts-org/sdk@1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@hypercerts-org/sdk/-/sdk-1.4.3.tgz#215e47496192e35c24b817925303edb493547990"
-  integrity sha512-9K/2dY/r5dXZiFPlM9rg06P36aH49grpetsvisi9HxJMJYTIQy6ZKvB/ix3zC7LS+zSv8fhz13AEoQVlmP3Svw==
+"@hypercerts-org/sdk@2.0.0-alpha.5":
+  version "2.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@hypercerts-org/sdk/-/sdk-2.0.0-alpha.5.tgz#971ff33f922bffa05f673c17002a1368f0d2990b"
+  integrity sha512-OQL6jNliFg73J6+XfPoYAEiFmHfI6Uxj4bGDJyMY/6e55UHDCorDkml5bGawxApl8Ldj1E0AZcPaj/687jPg2g==
   dependencies:
     "@ethereum-attestation-service/eas-sdk" "1.3.7"
     "@ethersproject/abstract-signer" "^5.7.0"
     "@graphql-typed-document-node/core" "^3.2.0"
     "@hypercerts-org/contracts" "1.1.2"
     "@openzeppelin/merkle-tree" "^1.0.5"
-    "@urql/core" "^4.2.0"
+    "@urql/core" "^4.3.0"
     "@whatwg-node/fetch" "^0.9.13"
     ajv "^8.11.2"
     axios "^1.6.2"
     dotenv "^16.0.3"
     ethers "5.7.2"
+    fast-deep-equal "^3.1.3"
     graphql "^16.8.1"
     loglevel "^1.8.1"
     urql "^4.0.6"
-    viem "^1.21.4"
+    viem "^2.9.4"
+    wonka "^6.3.4"
 
 "@iarna/toml@2.2.5":
   version "2.2.5"
@@ -2015,6 +2017,14 @@
     "@0no-co/graphql.web" "^1.0.1"
     wonka "^6.3.2"
 
+"@urql/core@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@urql/core/-/core-4.3.0.tgz#5e150412ed08d167861b05ceed417abbd048553f"
+  integrity sha512-wT+FeL8DG4x5o6RfHEnONNFVDM3616ouzATMYUClB6CB+iIu2mwfBKd7xSUxYOZmwtxna5/hDRQdMl3nbQZlnw==
+  dependencies:
+    "@0no-co/graphql.web" "^1.0.1"
+    wonka "^6.3.2"
+
 "@whatwg-node/events@^0.1.0":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@whatwg-node/events/-/events-0.1.1.tgz#0ca718508249419587e130da26d40e29d99b5356"
@@ -2047,10 +2057,10 @@ JSONStream@^1.3.5:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
 
-abitype@0.9.8:
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/abitype/-/abitype-0.9.8.tgz#1f120b6b717459deafd213dfbf3a3dd1bf10ae8c"
-  integrity sha512-puLifILdm+8sjyss4S+fsUN09obiT1g2YW6CtcQF+QDzxR0euzgEB29MZujC6zMk2a6SVmtttq1fc6+YFA7WYQ==
+abitype@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.0.0.tgz#237176dace81d90d018bebf3a45cb42f2a2d9e97"
+  integrity sha512-NMeMah//6bJ56H5XRj8QCV4AwuW6hB6zqz2LnhhLdcWVQOsXki6/Pn3APeqxCma62nXIcmZWdu1DlHWS74umVQ==
 
 abstract-level@^1.0.0, abstract-level@^1.0.2, abstract-level@^1.0.3:
   version "1.0.3"
@@ -7958,17 +7968,17 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-viem@^1.21.4:
-  version "1.21.4"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
-  integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==
+viem@^2.9.4:
+  version "2.9.16"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.9.16.tgz#2127871db1908a70798eddb820024b5f0ddc9152"
+  integrity sha512-FQRfN4G7uKEUs5DYvVrH/kZmTkwcSDpTBxnadpwG1EEP8nHm57WDpSaGN7PwSPVgJ6rMo5MENT5hgnqaNTlb2w==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.2.0"
     "@noble/hashes" "1.3.2"
     "@scure/bip32" "1.3.2"
     "@scure/bip39" "1.2.1"
-    abitype "0.9.8"
+    abitype "1.0.0"
     isows "1.0.3"
     ws "8.13.0"
 
@@ -8082,7 +8092,7 @@ windows-release@^5.0.1:
   dependencies:
     execa "^5.1.1"
 
-wonka@^6.3.2:
+wonka@^6.3.2, wonka@^6.3.4:
   version "6.3.4"
   resolved "https://registry.yarnpkg.com/wonka/-/wonka-6.3.4.tgz#76eb9316e3d67d7febf4945202b5bdb2db534594"
   integrity sha512-CjpbqNtBGNAeyNS/9W6q3kSkKE52+FjIj7AkFlLr11s/VWGUu6a2CdYSdGxocIhIVjaW/zchesBQUKPVU69Cqg==

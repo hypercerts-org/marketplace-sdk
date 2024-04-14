@@ -89,14 +89,19 @@ export class HypercertExchangeClient {
    * @param chainId Current app chain id
    * @param provider Ethers provider
    * @param signer Ethers signer
-   * @param override Overrides contract addresses for hardhat setup
+   * @param overrides Override contract addresses or api endpoint used
    */
-  constructor(chainId: ChainId, provider: Provider, signer?: Signer, override?: Addresses, apiEndpoint?: string) {
+  constructor(
+    chainId: ChainId,
+    provider: Provider,
+    signer?: Signer,
+    overrides?: { addresses: Addresses; apiEndpoint?: string }
+  ) {
     this.chainId = chainId;
-    this.addresses = override ?? addressesByNetwork[this.chainId];
+    this.addresses = overrides?.addresses ?? addressesByNetwork[this.chainId];
     this.signer = signer;
     this.provider = provider;
-    this.api = new ApiClient(apiEndpoint);
+    this.api = new ApiClient(overrides?.apiEndpoint);
   }
 
   /**

@@ -29,7 +29,7 @@ export class ApiClient {
    * @param chainId Chain ID
    */
   fetchOrderNonce = async ({ address, chainId }: { address: string; chainId: number }) => {
-    return fetch(`${this.baseUrl}/marketplace/order-nonce/`, {
+    return fetch(`${this._baseUrl}/marketplace/order-nonce/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,12 +39,7 @@ export class ApiClient {
         chainId,
       }),
     })
-      .then(
-        (res) =>
-          res.json() as Promise<{
-            data: { nonce_counter: number; address: string; chain_id: number };
-          }>
-      )
+      .then((res) => this.handleResponse<{ data: { nonce_counter: number; address: string; chain_id: number } }>(res))
       .then((res) => res.data);
   };
 
@@ -71,7 +66,7 @@ export class ApiClient {
   }) => {
     const { globalNonce, ...orderWithoutGlobalNonce } = order;
 
-    return fetch(`${this.baseUrl}/marketplace/order/`, {
+    return fetch(`${this._baseUrl}/marketplace/order/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +80,7 @@ export class ApiClient {
         signature,
         chainId,
       }),
-    }).then((res) => res.json() as Promise<{ success: boolean }>);
+    }).then((res) => this.handleResponse<{ success: boolean }>(res));
   };
 
   /**
@@ -128,9 +123,17 @@ export class ApiClient {
     });
 
     const fractions = await hypercertsClient.indexer.fractionsByClaim(hypercertId);
-    const tokenIds = fractions.claimTokens.map((fraction: any) => fraction.tokenID);
+    const tokenIds = fractions?.claimTokens.map((fraction) => fraction.tokenID) || [];
 
     return supabaseHypercerts.from("marketplace-orders").select("*").containedBy("itemIds", tokenIds).throwOnError();
+  };
+
+  handleResponse = async <T>(res: Response) => {
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message);
+    }
+    return (await res.json()) as T;
   };
 }
 
