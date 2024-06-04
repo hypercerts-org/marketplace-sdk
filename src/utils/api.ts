@@ -91,7 +91,7 @@ export class ApiClient {
    * @param strategy strategy for the order
    */
   fetchOrders = async ({ signer, claimTokenIds, chainId, strategy }: Partial<FetchOrderArgs>) => {
-    let baseQuery = supabaseHypercerts.from("marketplace-orders").select("*");
+    let baseQuery = supabaseHypercerts.from("marketplace_orders").select("*");
 
     if (signer) {
       baseQuery.eq("signer", signer);
@@ -125,7 +125,7 @@ export class ApiClient {
     const fractions = await hypercertsClient.indexer.fractionsByClaim(hypercertId);
     const tokenIds = fractions?.claimTokens.map((fraction) => fraction.tokenID) || [];
 
-    return supabaseHypercerts.from("marketplace-orders").select("*").containedBy("itemIds", tokenIds).throwOnError();
+    return supabaseHypercerts.from("marketplace_orders").select("*").containedBy("itemIds", tokenIds).throwOnError();
   };
 
   handleResponse = async <T>(res: Response) => {
