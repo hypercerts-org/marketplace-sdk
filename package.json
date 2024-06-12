@@ -1,6 +1,6 @@
 {
   "name": "@hypercerts-org/marketplace-sdk",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "license": "MIT",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
-    "@hypercerts-org/contracts": "1.1.2",
+    "@hypercerts-org/contracts": "2.0.0-alpha.0",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@looksrare/contracts-exchange-v1": "^1.2.0",
     "@looksrare/contracts-exchange-v2": "^0.1.2",
@@ -91,7 +91,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@hypercerts-org/sdk": "2.0.0-alpha.5",
+    "@hypercerts-org/sdk": "2.0.0-alpha.12",
     "@supabase/supabase-js": "^2.39.2",
     "ethers": "^6.6.2",
     "merkletreejs": "^0.3.9"

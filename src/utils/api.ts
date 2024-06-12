@@ -32,12 +32,12 @@ export class ApiClient {
     return fetch(`${this._baseUrl}/marketplace/order-nonce/`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         address,
-        chainId,
-      }),
+        chainId
+      })
     })
       .then((res) => this.handleResponse<{ data: { nonce_counter: number; address: string; chain_id: number } }>(res))
       .then((res) => res.data);
@@ -52,12 +52,12 @@ export class ApiClient {
    * @param chainId Chain ID
    */
   registerOrder = async ({
-    order,
-    signer,
-    signature,
-    quoteType,
-    chainId,
-  }: {
+                           order,
+                           signer,
+                           signature,
+                           quoteType,
+                           chainId
+                         }: {
     order: Maker;
     signer: string;
     signature: string;
@@ -69,7 +69,7 @@ export class ApiClient {
     return fetch(`${this._baseUrl}/marketplace/orders/`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         ...orderWithoutGlobalNonce,
@@ -78,8 +78,8 @@ export class ApiClient {
         quoteType,
         signer,
         signature,
-        chainId,
-      }),
+        chainId
+      })
     }).then((res) => this.handleResponse<{ success: boolean }>(res));
   };
 
@@ -119,11 +119,14 @@ export class ApiClient {
    */
   fetchOrdersByHypercertId = async ({ hypercertId, chainId }: { hypercertId: string; chainId: number }) => {
     const hypercertsClient = new HypercertClient({
-      chain: { id: chainId },
+      chain: { id: chainId }
     });
 
-    const fractions = await hypercertsClient.indexer.fractionsByClaim(hypercertId);
-    const tokenIds = fractions?.claimTokens.map((fraction) => fraction.tokenID) || [];
+    const fractions = await hypercertsClient.indexer.fractionsByHypercert({ hypercertId });
+    const tokenIds =
+      fractions?.hypercerts.data?.flatMap((hypercert) =>
+        hypercert.fractions?.data?.map((fraction) => fraction.hypercert_id)
+      ) || [];
 
     return supabaseHypercerts.from("marketplace_orders").select("*").containedBy("itemIds", tokenIds).throwOnError();
   };
