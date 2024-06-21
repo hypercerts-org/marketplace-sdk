@@ -45,6 +45,7 @@
     "ethers": "^6.6.2"
   },
   "devDependencies": {
+    "@0no-co/graphqlsp": "^1.12.8",
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
     "@hypercerts-org/contracts": "2.0.0-alpha.0",
@@ -91,9 +92,11 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@hypercerts-org/sdk": "2.0.0-alpha.20",
+    "@hypercerts-org/sdk": "2.0.0-alpha.26",
     "@supabase/supabase-js": "^2.39.2",
+    "@urql/core": "^5.0.4",
     "ethers": "^6.6.2",
+    "gql.tada": "^1.7.6",
     "merkletreejs": "^0.3.9"
   }
 }

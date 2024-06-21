@@ -2,6 +2,7 @@ import { Maker, QuoteType, StrategyType } from "../types";
 import { createClient } from "@supabase/supabase-js";
 import { Database as HypercertsDatabase } from "./hypercerts-database-types";
 import { HypercertClient, parseClaimOrFractionId } from "@hypercerts-org/sdk";
+import { getFractionsById } from "./graphl";
 
 const HYPERCERTS_MARKETPLACE_API_URL = process.env.HYPERCERTS_MARKETPLACE_API_URL;
 const SUPABASE_HYPERCERTS_URL = process.env.SUPABASE_HYPERCERTS_URL;
@@ -118,15 +119,9 @@ export class ApiClient {
    * @param chainId Chain ID
    */
   fetchOrdersByHypercertId = async ({ hypercertId }: { hypercertId: string }) => {
-    const hypercertsClient = new HypercertClient({
-      environment: "test",
-    });
-
-    const fractions = await hypercertsClient.indexer.fractionsByHypercert({ hypercertId });
+    const fractions = await getFractionsById(hypercertId);
     const tokenIds =
-      fractions?.hypercerts.data?.flatMap((hypercert) =>
-        hypercert.fractions?.data?.map((fraction) => parseClaimOrFractionId(fraction.fraction_id!).id)
-      ) || [];
+      fractions?.flatMap(() => fractions.map((fraction) => parseClaimOrFractionId(fraction.fraction_id!).id)) || [];
 
     const result = await supabaseHypercerts.from("marketplace_orders").select("*").overlaps("itemIds", tokenIds);
     return result;
