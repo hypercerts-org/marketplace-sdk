@@ -1,7 +1,7 @@
 import { Contract, Provider, Overrides, Signer } from "ethers";
-import { OrderValidatorV2A } from "@hypercerts-org/contracts";
 
 import { Maker, MerkleTree, OrderValidatorCode } from "../../types";
+import { OrderValidatorV2A, OrderValidatorV2AAbi } from "@hypercerts-org/contracts";
 
 export const verifyMakerOrders = async (
   signerOrProvider: Provider | Signer,
@@ -11,7 +11,7 @@ export const verifyMakerOrders = async (
   merkleTrees: MerkleTree[],
   overrides?: Overrides
 ): Promise<OrderValidatorCode[][]> => {
-  const contract = new Contract(address, OrderValidatorV2A).connect(signerOrProvider) as OrderValidatorV2A;
+  const contract = new Contract(address, OrderValidatorV2AAbi).connect(signerOrProvider) as OrderValidatorV2A;
   const orders = await contract.checkMultipleMakerOrderValidities(makerOrders, signatures, merkleTrees, {
     ...overrides,
   });
