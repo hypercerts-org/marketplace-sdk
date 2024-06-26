@@ -1,25 +1,24 @@
 import { Maker, QuoteType, StrategyType } from "../types";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Database as HypercertsDatabase } from "./hypercerts-database-types";
 import { CONSTANTS, parseClaimOrFractionId } from "@hypercerts-org/sdk";
 import { getFractionsById } from "./graphl";
 import { cacheExchange, Client, fetchExchange } from "@urql/core";
 
-const HYPERCERTS_MARKETPLACE_API_URL = process.env.HYPERCERTS_MARKETPLACE_API_URL;
-const SUPABASE_HYPERCERTS_URL = process.env.SUPABASE_HYPERCERTS_URL;
-const SUPABASE_HYPERCERTS_ANON_KEY = process.env.SUPABASE_HYPERCERTS_ANON_KEY;
-
-export const supabaseHypercerts = createClient<HypercertsDatabase>(
-  SUPABASE_HYPERCERTS_URL!,
-  SUPABASE_HYPERCERTS_ANON_KEY!
-);
+const SUPABASE_HYPERCERTS_DATA_STAGING_URL = "https://zgvoyckkistexkfdmjqc.supabase.co";
+const SUPABASE_HYPERCERTS_DATA_STAGING_ANON_KEY_STAGING =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpndm95Y2traXN0ZXhrZmRtanFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc4ODM1MjAsImV4cCI6MjAxMzQ1OTUyMH0.6FWDhwP3ZOM1O3ObvyRKtOsvwhJjbrZL2B1N-0MSpFg";
+const SUPABASE_HYPERCERTS_DATA_PRODUCTION_URL = "https://ueebbafxdbglaqtyslwv.supabase.co";
+const SUPABASE_HYPERCERTS_DATA_PRODUCTION_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZWJiYWZ4ZGJnbGFxdHlzbHd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc1NTA1MzUsImV4cCI6MjAxMzEyNjUzNX0.mhClRFe8QL6IQLMvTXjdprR6agr_OXF9g2CUJBww4mE";
 
 export class ApiClient {
   private _baseUrl: string;
   private _urqlClient: Client;
+  private _supabaseHypercerts: SupabaseClient<HypercertsDatabase>;
 
   constructor(indexerEnvironment: "test" | "production", private readonly baseUrl?: string) {
-    const url = baseUrl || HYPERCERTS_MARKETPLACE_API_URL;
+    const url = baseUrl || `${CONSTANTS.ENDPOINTS[indexerEnvironment]}/v1`;
     if (!url) {
       throw new Error("No API URL provided");
     }
@@ -29,6 +28,13 @@ export class ApiClient {
       url: `${CONSTANTS.ENDPOINTS[indexerEnvironment]}/v1/graphql`,
       exchanges: [cacheExchange, fetchExchange],
     });
+
+    this._supabaseHypercerts = createClient<HypercertsDatabase>(
+      indexerEnvironment === "test" ? SUPABASE_HYPERCERTS_DATA_STAGING_URL : SUPABASE_HYPERCERTS_DATA_PRODUCTION_URL,
+      indexerEnvironment === "test"
+        ? SUPABASE_HYPERCERTS_DATA_STAGING_ANON_KEY_STAGING
+        : SUPABASE_HYPERCERTS_DATA_PRODUCTION_ANON_KEY
+    );
   }
 
   /**
@@ -99,7 +105,7 @@ export class ApiClient {
    * @param strategy strategy for the order
    */
   fetchOrders = async ({ signer, claimTokenIds, chainId, strategy }: Partial<FetchOrderArgs>) => {
-    let baseQuery = supabaseHypercerts.from("marketplace_orders").select("*");
+    let baseQuery = this._supabaseHypercerts.from("marketplace_orders").select("*");
 
     if (signer) {
       baseQuery.eq("signer", signer);
@@ -130,7 +136,7 @@ export class ApiClient {
     const tokenIds =
       fractions?.flatMap(() => fractions.map((fraction) => parseClaimOrFractionId(fraction.fraction_id!).id)) || [];
 
-    const result = await supabaseHypercerts.from("marketplace_orders").select("*").overlaps("itemIds", tokenIds);
+    const result = await this._supabaseHypercerts.from("marketplace_orders").select("*").overlaps("itemIds", tokenIds);
     return result;
   };
 
