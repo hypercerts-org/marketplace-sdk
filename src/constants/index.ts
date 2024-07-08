@@ -12,4 +12,6 @@ export const MAX_ORDERS_PER_TREE = 1024;
 export const defaultMerkleTree = { root: ZeroHash, proof: [] };
 
 export { addressesByNetwork } from "./addresses";
+export { currenciesByNetwork } from "./currencies";
+
 export { chainInfo } from "./chains";

@@ -11,9 +11,8 @@ import {
 } from "ethers";
 import { MerkleTree as MerkleTreeJS } from "merkletreejs";
 import { keccak256 } from "js-sha3";
-import { addressesByNetwork } from "./constants/addresses";
 import { contractName, version } from "./constants/eip712";
-import { defaultMerkleTree, MAX_ORDERS_PER_TREE } from "./constants";
+import { currenciesByNetwork, defaultMerkleTree, MAX_ORDERS_PER_TREE, addressesByNetwork } from "./constants";
 import { signMakerOrder, signMerkleTreeOrders } from "./utils/signMakerOrders";
 import {
   cancelOrderNonces,
@@ -50,6 +49,7 @@ import {
   CreateMakerCollectionOfferInput,
   CreateMakerCollectionOfferWithProofInput,
   CreateMakerInput,
+  Currencies,
   Maker,
   MerkleTree,
   OrderValidatorCode,
@@ -70,11 +70,14 @@ import { asDeployedChain } from "@hypercerts-org/contracts";
 export class HypercertExchangeClient {
   /** Current app chain ID */
   public readonly chainId: ChainId;
+
   /** Mapping of Hypercert protocol addresses for the current chain */
   public readonly addresses: Addresses;
+  /** List of supported currencies for the current chain */
+  public readonly currencies: Currencies;
 
+  /** API client to interact with the HypercertExchange API */
   public readonly api: ApiClient;
-
   /**
    * Ethers signer
    * @see {@link https://docs.ethers.org/v6/api/providers/#Signer Ethers signer doc}
@@ -97,7 +100,7 @@ export class HypercertExchangeClient {
     chainId: ChainId,
     provider: Provider,
     signer?: Signer,
-    overrides?: { addresses: Addresses; apiEndpoint?: string }
+    overrides?: { addresses: Addresses; currencies: Currencies; apiEndpoint?: string }
   ) {
     const deployment = CONSTANTS.DEPLOYMENTS[asDeployedChain(chainId)];
     if (!deployment) {
@@ -106,13 +109,14 @@ export class HypercertExchangeClient {
     const indexerEnvironment = deployment.isTestnet ? "test" : "production";
     this.chainId = chainId;
     this.addresses = overrides?.addresses ?? addressesByNetwork[this.chainId];
+    this.currencies = overrides?.currencies ?? currenciesByNetwork[this.chainId];
     this.signer = signer;
     this.provider = provider;
     this.api = new ApiClient(indexerEnvironment, overrides?.apiEndpoint);
   }
 
   /**
-   * Return the signer it it's set, throw an exception otherwise
+   * Return the signer if it's set, throw an exception otherwise
    * @returns Signer
    */
   private getSigner(): Signer {
@@ -224,7 +228,7 @@ export class HypercertExchangeClient {
     price,
     itemIds,
     amounts = [1],
-    currency = this.addresses.WETH,
+    currency = this.currencies.WETH.address,
     startTime = Math.floor(Date.now() / 1000),
     additionalParameters = [],
   }: CreateMakerInput): Promise<CreateMakerBidOutput> {
@@ -642,7 +646,7 @@ export class HypercertExchangeClient {
     price,
     startTime,
     endTime,
-    currency = this.addresses.WETH,
+    currency = this.currencies.WETH.address,
     additionalParameters = [],
   }: Omit<
     CreateMakerInput,
@@ -699,7 +703,7 @@ export class HypercertExchangeClient {
     price,
     startTime,
     endTime,
-    currency = this.addresses.WETH,
+    currency = this.currencies.WETH.address,
     maxUnitAmount,
     minUnitAmount,
     minUnitsToKeep,

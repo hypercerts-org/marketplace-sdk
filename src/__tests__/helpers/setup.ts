@@ -32,6 +32,7 @@ export interface SetupMocks {
   addresses: Addresses & {
     MOCK_COLLECTION_ERC721: string;
     MOCK_COLLECTION_ERC1155: string;
+    WETH: string;
   };
 }
 
