@@ -13,7 +13,11 @@ export interface Addresses {
 /** List of supported chains */
 export enum ChainId {
   SEPOLIA = 11155111,
+  BASE_SEPOLIA = 84532,
   HARDHAT = 31337,
+  OPTIMISM = 10,
+  CELO = 42220,
+  BASE = 8453,
 }
 
 /** ChainInfo data used to interact with HypercertExchange ecosystem */
