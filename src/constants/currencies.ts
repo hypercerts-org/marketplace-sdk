@@ -12,20 +12,26 @@ const currencyAddressesPerChain: Record<ChainId, CurrenciesForChain> = {
   [ChainId.SEPOLIA]: {
     ETH: ZeroAddress as `0x${string}`,
     WETH: "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9",
-    DAI: "0x68194a729C2450ad26072b3D33ADaCbcef39D574",
+    DAI: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
     USDC: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
   },
   [ChainId.HARDHAT]: {
     ETH: ZeroAddress as `0x${string}`,
     WETH: "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9",
-    DAI: "0x68194a729C2450ad26072b3D33ADaCbcef39D574",
+    DAI: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
     USDC: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
   },
   [ChainId.BASE_SEPOLIA]: {
     ETH: ZeroAddress as `0x${string}`,
-    WETH: "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9",
+    WETH: "0x4200000000000000000000000000000000000006",
     DAI: "0xE4aB69C077896252FAFBD49EFD26B5D171A32410",
     USDC: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  },
+  [ChainId.ARBITRUM_SEPOLIA]: {
+    ETH: ZeroAddress as `0x${string}`,
+    WETH: "0x3031a6D5D9648BA5f50f656Cd4a1672E1167a34A",
+    DAI: "0xb1D4538B4571d411F07960EF2838Ce337FE1E80E",
+    USDC: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
   },
   [ChainId.OPTIMISM]: {
     ETH: ZeroAddress as `0x${string}`,
@@ -44,6 +50,12 @@ const currencyAddressesPerChain: Record<ChainId, CurrenciesForChain> = {
     WETH: "0x4200000000000000000000000000000000000006",
     DAI: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
     USDC: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  },
+  [ChainId.ARBITRUM]: {
+    ETH: ZeroAddress as `0x${string}`,
+    WETH: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+    DAI: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+    USDC: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
   },
 };
 
@@ -81,4 +93,6 @@ export const currenciesByNetwork: Record<ChainId, Currencies> = {
   [ChainId.OPTIMISM]: getCurrencies(ChainId.OPTIMISM),
   [ChainId.CELO]: getCurrencies(ChainId.CELO),
   [ChainId.BASE]: getCurrencies(ChainId.BASE),
+  [ChainId.ARBITRUM_SEPOLIA]: getCurrencies(ChainId.ARBITRUM_SEPOLIA),
+  [ChainId.ARBITRUM]: getCurrencies(ChainId.ARBITRUM),
 };

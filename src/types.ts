@@ -32,6 +32,8 @@ export enum ChainId {
   OPTIMISM = 10,
   CELO = 42220,
   BASE = 8453,
+  ARBITRUM_SEPOLIA = 421614,
+  ARBITRUM = 42161,
 }
 
 /** ChainInfo data used to interact with HypercertExchange ecosystem */
