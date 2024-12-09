@@ -4,6 +4,7 @@ import { Database as HypercertsDatabase } from "./hypercerts-database-types";
 import { CONSTANTS, parseClaimOrFractionId } from "@hypercerts-org/sdk";
 import { getFractionsById, getOrders } from "./graphl";
 import { cacheExchange, Client, fetchExchange } from "@urql/core";
+import { deprecate } from "util";
 
 const SUPABASE_HYPERCERTS_DATA_STAGING_URL = "https://zgvoyckkistexkfdmjqc.supabase.co";
 const SUPABASE_HYPERCERTS_DATA_STAGING_ANON_KEY_STAGING =
@@ -58,7 +59,7 @@ export class ApiClient {
   };
 
   /**
-   * Registers order in api
+   * Registers order in the marketplace api
    * @param order Order
    * @param signer Signer
    * @param signature Signature
@@ -98,6 +99,7 @@ export class ApiClient {
   };
 
   /**
+   * @deprecated use GraphQL api instead instead
    * Fetch existing open orders from the marketplace API
    * @param signer address of the user that created the order
    * @param claimTokenIds a list of claimTokenIds - will return any order that is for one or more of these claimTokenIds
@@ -124,9 +126,10 @@ export class ApiClient {
     }
 
     return await getOrders({ signer, chainId: chainId ? BigInt(chainId) : undefined }, this._urqlClient);
-  };
+  }
 
   /**
+   * @deprecated use GraphQL api instead instead
    * Fetches orders from api by hypercert ID
    * @param hypercertId Hypercert ID
    * @param chainId Chain ID
