@@ -1,6 +1,6 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./src/HypercertExchangeClient.ts", "./src/types.ts"],
+  "entryPoints": ["./src/HypercertExchangeClient.ts", "./src/types.ts", "./guides/readme.md"],
   "out": "./doc",
   "githubPages": false,
   "readme": "none",
@@ -8,6 +8,5 @@
   "disableSources": true,
   "cleanOutputDir": false,
 
-  "hideBreadcrumbs": true,
-  "hideInPageTOC": true
+  "projectDocuments": ["./guides/readme.md"],
 }

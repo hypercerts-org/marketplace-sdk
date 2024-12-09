@@ -4,42 +4,37 @@
 
 > **This functionality is for UI implementations only. If you are using a bot, don't use the `signMultipleMakerOrders` function, just loop over the `createMakerBid` and `createMakerAsk` functions.**
 
-The code snippet below is an example of how to sign multiple orders with one signature using Merkle trees via the `@looksrare/sdk-v2` library.
+The code snippet below is an example of how to sign multiple orders with one signature using Merkle trees via the `@hypercerts-org/marketplace-sdk` library.
 
 **NOTE**: In this example we only used maker asks, for maker bids the approvals logic needs to be adjusted. See the documentation on [creating maker bids](./createMakerBid.md) for more details.
 
 ```ts
 import { ethers } from "ethers";
-import { LooksRare, ChainId, CollectionType, StrategyType } from "@looksrare/sdk-v2";
+import { HypercertExchangeClient, ChainId, CollectionType, StrategyType } from "@hypercerts-org/marketplace-sdk";
 
-const lr = new LooksRare(ChainId.MAINNET, provider, signer);
+const hypercertExchangeClient = new HypercertExchangeClient(ChainId.MAINNET, provider, signer);
 
 const orders = [];
 
-orders.push(await lr.createMakerAsk(...));
-orders.push(await lr.createMakerAsk(...));
+orders.push(await hypercertExchangeClient.createMakerAsk(...));
+orders.push(await hypercertExchangeClient.createMakerAsk(...));
 
-// Grant the TransferManager the right the transfer assets on behalf od the LooksRareProtocol. Only needs to be done once per signer.
+// Grant the TransferManager the right the transfer assets on behalf od the Hypercert Exchange Protocol. Only needs to be done once per signer.
 if (!orders[0].isTransferManagerApproved) {
-    const tx = await lr.grantTransferManagerApproval().call();
+    const tx = await hypercertExchangeClient.grantTransferManagerApproval().call();
     await tx.wait();
 }
 
 for (const order of orders) {
     // Approve the collection items to be transferred by the TransferManager
     if (!order.isCollectionApproved) {
-        const tx = await lr.approveAllCollectionItems(order.maker.collection);
+        const tx = await hypercertExchangeClient.approveAllCollectionItems(order.maker.collection);
         await tx.wait();
     }
 }
 
-const { signature, merkleTreeProofs } = await lr.signMultipleMakerOrders(orders);
+const { signature, merkleTreeProofs } = await hypercertExchangeClient.signMultipleMakerOrders(orders);
 ```
-
-> The maker orders, merkleTreeProofs and signature will have be sent to the `POST /api/v2/orders/tree` endpoint. For more details and examples, see [create Merkle tree order](https://looksrare.dev/v2/reference/createmerkletree).
 
 For more information on how to create your orders, see the [createMakerAsk](./createMakerAsk.md) and [createMakerBid](./createMakerBid.md) documentation.
 
-## Need help?
-
-You can reach out to the LooksRare team via our Developers Discord: [https://discord.gg/LooksRareDevelopers](https://discord.gg/LooksRareDevelopers)

@@ -1,6 +1,14 @@
+**@hypercerts-org/marketplace-sdk**
+
+***
+
 # @hypercerts-org/marketplace-sdk
+
+## Documents
+
+- [Developer guide](documents/Developer-guide.md)
 
 ## Modules
 
-- [HypercertExchangeClient](modules/HypercertExchangeClient.md)
-- [types](modules/types.md)
+- [src/HypercertExchangeClient](src/HypercertExchangeClient/README.md)
+- [src/types](src/types/README.md)

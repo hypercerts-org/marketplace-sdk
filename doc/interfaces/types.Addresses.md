@@ -27,9 +27,3 @@ ___
 ### TRANSFER\_MANAGER\_V2
 
 • **TRANSFER\_MANAGER\_V2**: \`0x$\{string}\`
-
-___
-
-### WETH
-
-• **WETH**: \`0x$\{string}\`

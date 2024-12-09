@@ -58,7 +58,7 @@ export class ApiClient {
   };
 
   /**
-   * Registers order in api
+   * Registers order in the marketplace api
    * @param order Order
    * @param signer Signer
    * @param signature Signature

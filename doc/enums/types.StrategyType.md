@@ -8,7 +8,7 @@ List of trading strategies
 
 ### collection
 
-• **collection** = ``1``
+• **collection** = ``10``
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 ### hypercertFractionOffer
 
-• **hypercertFractionOffer** = ``10``
+• **hypercertFractionOffer** = ``1``
 
 ___
 

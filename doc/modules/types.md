@@ -18,6 +18,8 @@
 - [CreateMakerAskOutput](../interfaces/types.CreateMakerAskOutput.md)
 - [CreateMakerBidOutput](../interfaces/types.CreateMakerBidOutput.md)
 - [CreateMakerInput](../interfaces/types.CreateMakerInput.md)
+- [Currencies](../interfaces/types.Currencies.md)
+- [Currency](../interfaces/types.Currency.md)
 - [Maker](../interfaces/types.Maker.md)
 - [MerkleTree](../interfaces/types.MerkleTree.md)
 - [MerkleTreeProof](../interfaces/types.MerkleTreeProof.md)

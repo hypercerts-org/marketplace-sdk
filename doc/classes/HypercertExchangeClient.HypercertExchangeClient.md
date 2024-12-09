@@ -9,7 +9,7 @@ This class provides helpers to interact with the HypercertExchange V2 contracts
 
 ### constructor
 
-• **new HypercertExchangeClient**(`chainId`, `provider`, `signer?`, `override?`)
+• **new HypercertExchangeClient**(`chainId`, `provider`, `signer?`, `overrides?`)
 
 HypercertExchange protocol main class
 
@@ -20,7 +20,10 @@ HypercertExchange protocol main class
 | `chainId` | [`ChainId`](../enums/types.ChainId.md) | Current app chain id |
 | `provider` | `Provider` | Ethers provider |
 | `signer?` | `Signer` | Ethers signer |
-| `override?` | [`Addresses`](../interfaces/types.Addresses.md) | Overrides contract addresses for hardhat setup |
+| `overrides?` | `Object` | Override contract addresses or api endpoint used |
+| `overrides.addresses` | [`Addresses`](../interfaces/types.Addresses.md) | - |
+| `overrides.apiEndpoint?` | `string` | - |
+| `overrides.currencies` | [`Currencies`](../interfaces/types.Currencies.md) | - |
 
 ## Properties
 
@@ -34,7 +37,9 @@ ___
 
 ### api
 
-• `Readonly` **api**: `__module`
+• `Readonly` **api**: `ApiClient`
+
+API client to interact with the HypercertExchange API
 
 ___
 
@@ -43,6 +48,14 @@ ___
 • `Readonly` **chainId**: [`ChainId`](../enums/types.ChainId.md)
 
 Current app chain ID
+
+___
+
+### currencies
+
+• `Readonly` **currencies**: [`Currencies`](../interfaces/types.Currencies.md)
+
+List of supported currencies for the current chain
 
 ___
 
@@ -177,6 +190,25 @@ Cancel a list of specific subset orders
 [`ContractMethods`](../interfaces/types.ContractMethods.md)
 
 ContractMethods
+
+___
+
+### checkOrdersValidity
+
+▸ **checkOrdersValidity**(`orders`, `overrides?`): `Promise`\<\{ `id`: `string` ; `order`: `Omit`\<\{ `additionalParameters`: `string` ; `amounts`: `number`[] ; `chainId`: `number` ; `collection`: `string` ; `collectionType`: `number` ; `createdAt`: `string` ; `currency`: `string` ; `endTime`: `number` ; `globalNonce`: `string` ; `id`: `string` ; `invalidated`: `boolean` ; `itemIds`: `string`[] ; `orderNonce`: `string` ; `price`: `string` ; `quoteType`: `number` ; `signature`: `string` ; `signer`: `string` ; `startTime`: `number` ; `strategyId`: `number` ; `subsetNonce`: `number` ; `validator_codes`: ``null`` \| `number`[]  }, ``"id"`` \| ``"createdAt"`` \| ``"invalidated"`` \| ``"validator_codes"``\> ; `valid`: `boolean` ; `validatorCodes`: [`OrderValidatorCode`](../enums/types.OrderValidatorCode.md)[]  }[]\>
+
+Utility function to check if a list of orders are valid, according to logic specific for hypercerts using order validation codes.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `orders` | \{ `additionalParameters`: `string` ; `amounts`: `number`[] ; `chainId`: `number` ; `collection`: `string` ; `collectionType`: `number` ; `createdAt`: `string` ; `currency`: `string` ; `endTime`: `number` ; `globalNonce`: `string` ; `id`: `string` ; `invalidated`: `boolean` ; `itemIds`: `string`[] ; `orderNonce`: `string` ; `price`: `string` ; `quoteType`: `number` ; `signature`: `string` ; `signer`: `string` ; `startTime`: `number` ; `strategyId`: `number` ; `subsetNonce`: `number` ; `validator_codes`: ``null`` \| `number`[]  }[] | List of orders to be checked |
+| `overrides?` | `Overrides` | Call overrides (optional) |
+
+#### Returns
+
+`Promise`\<\{ `id`: `string` ; `order`: `Omit`\<\{ `additionalParameters`: `string` ; `amounts`: `number`[] ; `chainId`: `number` ; `collection`: `string` ; `collectionType`: `number` ; `createdAt`: `string` ; `currency`: `string` ; `endTime`: `number` ; `globalNonce`: `string` ; `id`: `string` ; `invalidated`: `boolean` ; `itemIds`: `string`[] ; `orderNonce`: `string` ; `price`: `string` ; `quoteType`: `number` ; `signature`: `string` ; `signer`: `string` ; `startTime`: `number` ; `strategyId`: `number` ; `subsetNonce`: `number` ; `validator_codes`: ``null`` \| `number`[]  }, ``"id"`` \| ``"createdAt"`` \| ``"invalidated"`` \| ``"validator_codes"``\> ; `valid`: `boolean` ; `validatorCodes`: [`OrderValidatorCode`](../enums/types.OrderValidatorCode.md)[]  }[]\>
 
 ___
 
@@ -402,6 +434,24 @@ Taker object
 
 ___
 
+### deleteOrder
+
+▸ **deleteOrder**(`orderId`): `Promise`\<`boolean`\>
+
+Delete the order
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `orderId` | `string` | Order ID |
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+___
+
 ### executeMultipleOrders
 
 ▸ **executeMultipleOrders**(`orders`, `isAtomic`, `overrides?`): `Object`
@@ -458,7 +508,7 @@ ___
 
 ▸ `Private` **getSigner**(): `Signer`
 
-Return the signer it it's set, throw an exception otherwise
+Return the signer if it's set, throw an exception otherwise
 
 #### Returns
 
