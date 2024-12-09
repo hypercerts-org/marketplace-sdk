@@ -116,25 +116,23 @@ export interface CreateMakerBidOutput {
 export interface CreateMakerInput {
   /** Collection address */
   collection: string;
-  /** Strategy ID, 0: Standard, 1: Collection, etc*/
+  /** Strategy ID, 0: Sell entire fraction, 1: Sell part of a fraction, etc*/
   strategyId: StrategyType;
   /** Asset type, 0: ERC-721, 1:ERC-1155, etc */
   collectionType: CollectionType;
   /** Subset nonce used to group an arbitrary number of orders under the same nonce */
   subsetNonce: BigNumberish;
-  /** Order nonce, get it from the HypercertExchange api */
+  /** Order nonce, get it from the HypercertExchange API */
   orderNonce: BigNumberish;
   /** Timestamp in seconds when the order becomes invalid */
   endTime: BigNumberish;
   /** Asset price in wei */
   price: BigNumberish;
   /**
-   * List of items ids to be sold
+   * IDs of fractions to be sold
    * @defaultValue [1]
    */
   itemIds: BigNumberish[];
-  /** Amount for each item ids (needs to have the same length as itemIds array) */
-  amounts?: BigNumberish[];
   /**
    * Currency address
    * @defaultValue ETH
@@ -150,6 +148,41 @@ export interface CreateMakerInput {
    * @defaultValue []
    */
   additionalParameters?: any[];
+}
+
+export type CreateDirectFractionsSaleMakerAskInput = Omit<
+  CreateMakerInput,
+  "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts"
+>;
+
+export type CreateFractionalSaleMakerAskInput = Omit<
+  CreateMakerInput,
+  "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts" | "additionalParameters" | "price"
+> & {
+  /**
+   * Price of one unit in wei
+   */
+  price: BigNumberish;
+  /**
+   * Minimum amount of units to sell per transaction.
+   */
+  minUnitAmount: BigNumberish;
+  /**
+   * Maximum amount of units to sell per transaction.
+   */
+  maxUnitAmount: BigNumberish;
+  /**
+   * Minimum amount of units to keep after all sales.
+   */
+  minUnitsToKeep: BigNumberish;
+  /**
+   * Whether to sell the leftover fraction, if any. This will override `minUnitsAmount` on the last sale if there are leftover units in the fraction.
+   */
+  sellLeftoverFraction: boolean;
+  /**
+   * Root of the allowlist tree for users that are allowed to buy parts of the fraction.
+   */
+  root?: string;
 }
 
 export type CreateMakerCollectionOfferInput = Omit<CreateMakerInput, "strategyId" | "itemIds">;
@@ -182,9 +215,9 @@ export interface Maker {
   endTime: BigNumberish;
   /** Minimum price to be received after the trade */
   price: BigNumberish;
-  /** List of item IDS */
+  /** List of fraction IDS */
   itemIds: BigNumberish[];
-  /** List of amount for each item ID (1 for ERC721) */
+  /** List of amount for sale for each fraction ID (will always be 1 for hypercert fractions as they are unique) */
   amounts: BigNumberish[];
   /** Additional parameters for complex orders */
   additionalParameters: BytesLike;

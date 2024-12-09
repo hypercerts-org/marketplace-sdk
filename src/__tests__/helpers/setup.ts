@@ -78,7 +78,7 @@ export const setUpContracts = async (): Promise<SetupMocks> => {
     await royaltyFeeRegistry.getAddress()
   )) as CreatorFeeManagerWithRoyalties;
   const weth = (await deploy("WETH")) as WETH;
-  const looksRareProtocol = (await deploy(
+  const hypercertExchangeProtocol = (await deploy(
     "LooksRareProtocol",
     signers.owner.address,
     signers.protocolFeeRecipient.address,
@@ -89,21 +89,21 @@ export const setUpContracts = async (): Promise<SetupMocks> => {
 
   const addresses = {
     weth: await weth.getAddress(),
-    looksRareProtocol: await looksRareProtocol.getAddress(),
+    looksRareProtocol: await hypercertExchangeProtocol.getAddress(),
     strategyCollectionOffer: await strategyCollectionOffer.getAddress(),
     transferManager: await transferManager.getAddress(),
     feeManager: await feeManager.getAddress(),
   };
 
-  tx = await looksRareProtocol.updateCreatorFeeManager.send(addresses.feeManager);
+  tx = await hypercertExchangeProtocol.updateCreatorFeeManager.send(addresses.feeManager);
   await tx.wait();
-  tx = await looksRareProtocol.updateCurrencyStatus(ZeroAddress, true);
+  tx = await hypercertExchangeProtocol.updateCurrencyStatus(ZeroAddress, true);
   await tx.wait();
-  tx = await looksRareProtocol.updateCurrencyStatus(addresses.weth, true);
+  tx = await hypercertExchangeProtocol.updateCurrencyStatus(addresses.weth, true);
   await tx.wait();
   tx = await transferManager.allowOperator(addresses.looksRareProtocol);
   await tx.wait();
-  tx = await looksRareProtocol.addStrategy(
+  tx = await hypercertExchangeProtocol.addStrategy(
     250,
     250,
     300,
@@ -111,7 +111,7 @@ export const setUpContracts = async (): Promise<SetupMocks> => {
     true,
     addresses.strategyCollectionOffer
   );
-  tx = await looksRareProtocol.addStrategy(
+  tx = await hypercertExchangeProtocol.addStrategy(
     250,
     250,
     300,
@@ -146,7 +146,7 @@ export const setUpContracts = async (): Promise<SetupMocks> => {
 
   return {
     contracts: {
-      looksRareProtocol,
+      looksRareProtocol: hypercertExchangeProtocol,
       transferManager,
       collectionERC721,
       collectionERC1155,

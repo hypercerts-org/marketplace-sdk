@@ -22,7 +22,7 @@ export class ApiClient {
   }
 
   /**
-   * Fetches order nonce from api
+   * Fetches order nonce from API
    * @param address Address
    * @param chainId Chain ID
    */
@@ -42,7 +42,7 @@ export class ApiClient {
   };
 
   /**
-   * Registers order in api
+   * Registers order in the marketplace API
    * @param order Order
    * @param signer Signer
    * @param signature Signature
@@ -82,6 +82,7 @@ export class ApiClient {
   };
 
   /**
+   * @deprecated use GraphQL API instead
    * Fetch existing open orders from the marketplace API
    * @param signer address of the user that created the order
    * @param claimTokenIds a list of claimTokenIds - will return any order that is for one or more of these claimTokenIds
@@ -90,10 +91,11 @@ export class ApiClient {
    */
   fetchOrders = async ({ signer, chainId }: Partial<FetchOrderArgs>) => {
     return await getOrders({ signer, chainId: chainId ? BigInt(chainId) : undefined }, this._urqlClient);
-  };
+  }
 
   /**
-   * Fetches orders from api by hypercert ID
+   * @deprecated use the GraphQL API instead
+   * Fetches orders from API by hypercert ID
    * @param hypercertId Hypercert ID
    * @param chainId Chain ID
    */

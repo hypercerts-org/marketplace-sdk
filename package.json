@@ -29,7 +29,7 @@
     "dev": "rollup -c --bundleConfigAsCjs -w",
     "build:ts": "rollup -c --bundleConfigAsCjs",
     "build:sc": "hardhat compile",
-    "build": "yarn build:sc && yarn build:ts",
+    "build": "pnpm run build:sc && pnpm run build:ts",
     "test": "nyc hardhat test",
     "doc": "typedoc --plugin typedoc-plugin-markdown --tsconfig tsconfig.build.json",
     "lint": "eslint --max-warnings 0 'src/**/*.{js,ts}'",
@@ -38,7 +38,7 @@
     "release": "release-it --only-version --set-upstream"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,yaml,yml}": "yarn format:write"
+    "*.{js,jsx,ts,tsx,json,yaml,yml}": "pnpm run format:write"
   },
   "peerDependencies": {
     "ethers": "^6.6.2"
@@ -51,6 +51,7 @@
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@looksrare/contracts-exchange-v1": "^1.2.0",
     "@looksrare/contracts-exchange-v2": "^0.1.2",
+    "@looksrare/contracts-libs": "^3.5.1",
     "@nomicfoundation/hardhat-ethers": "^3.0.4",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
@@ -86,8 +87,8 @@
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.1",
     "typechain": "^8.2.0",
-    "typedoc": "^0.24.7",
-    "typedoc-plugin-markdown": "^3.15.3",
+    "typedoc": "^0.27.4",
+    "typedoc-plugin-markdown": "^4.3.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {
@@ -96,6 +97,7 @@
     "@urql/core": "^5.0.4",
     "ethers": "^6.6.2",
     "gql.tada": "^1.7.6",
+    "js-sha3": "^0.9.3",
     "merkletreejs": "^0.3.9"
   }
 }

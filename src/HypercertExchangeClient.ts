@@ -36,7 +36,10 @@ import {
 import {
   Addresses,
   ChainId,
+  CollectionType,
   ContractMethods,
+  CreateDirectFractionsSaleMakerAskInput,
+  CreateFractionalSaleMakerAskInput,
   CreateMakerAskOutput,
   CreateMakerBidOutput,
   CreateMakerInput,
@@ -88,10 +91,10 @@ export class HypercertExchangeClient {
 
   /**
    * HypercertExchange protocol main class
-   * @param chainId Current app chain id
+   * @param chainId Chain id for contract interactions
    * @param provider Ethers provider
    * @param signer Ethers signer
-   * @param overrides Override contract addresses or api endpoint used
+   * @param overrides Override contract addresses or API endpoint used
    */
   constructor(
     chainId: ChainId,
@@ -273,41 +276,6 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Create a maker bid for collection offer.
-   * @see this.createMakerBid
-   * @param orderInputs Order data
-   * @returns CreateMakerBidOutput
-   */
-  public createMakerCollectionOffer(orderInputs: CreateMakerCollectionOfferInput): Promise<CreateMakerBidOutput> {
-    return this.createMakerBid({ ...orderInputs, strategyId: StrategyType.collection, itemIds: [] });
-  }
-
-  /**
-   * Create a maker bid for collection, with a list of item id that can be used for the taker order
-   * @see this.createMakerBid
-   * @param orderInputs Order data
-   * @returns CreateMakerBidOutput
-   */
-  public async createMakerCollectionOfferWithProof(
-    orderInputs: CreateMakerCollectionOfferWithProofInput
-  ): Promise<CreateMakerBidOutput> {
-    const { itemIds, ...otherInputs } = orderInputs;
-    const leaves = itemIds.map((itemId) => {
-      const hash = solidityPackedKeccak256(["uint256"], [itemId]);
-      return Buffer.from(hash.slice(2), "hex");
-    });
-    const tree = new MerkleTreeJS(leaves, keccak256, { sortPairs: true });
-    const root = tree.getHexRoot();
-
-    return this.createMakerBid({
-      ...otherInputs,
-      strategyId: StrategyType.collectionWithMerkleTree,
-      additionalParameters: [root],
-      itemIds: [],
-    });
-  }
-
-  /**
    * Create a taker ask ready to be executed against a maker bid
    * @param maker Maker order that will be used as counterparty for the taker
    * @param recipient Recipient address of the taker (if none, it will use the sender)
@@ -351,7 +319,7 @@ export class HypercertExchangeClient {
    * @param maker Maker order
    * @param taker Taker order
    * @param signature Signature of the maker order
-   * @param merkleTree If the maker has been signed with a merkle tree
+   * @param merkleTree Optional merkle tree
    * @returns ContractMethods
    */
   public executeOrder(
@@ -424,7 +392,7 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Cancel a list of specific orders
+   * Cancel a list of orders by nonce
    * @param nonces List of nonces to be cancelled
    * @returns ContractMethods
    */
@@ -451,7 +419,7 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Approve an ERC20 to be used as a currency on HypercertExchange.
+   * Approve an ERC20 to be used as a currency on the Hypercert Exchange.
    * The spender is the HypercertExchangeProtocol contract.
    * @param tokenAddress Address of the ERC20 to approve
    * @param amount Amount to be approved (default to MaxUint256)
@@ -601,12 +569,7 @@ export class HypercertExchangeClient {
 
   /**
    * Create a maker ask for a collection or singular offer of fractions
-   * @param itemIds Token IDs of the fractions to be sold
-   * @param price Price of the fractions in wei
-   * @param startTime Timestamp in seconds when the order becomes valid
-   * @param endTime Timestamp in seconds when the order becomes invalid
-   * @param currency Currency used to buy the fractions (default to WETH)
-   * @param additionalParameters Additional parameters used to support complex orders
+   * @param CreateDirectFractionsSaleMakerAskInput
    */
   public async createDirectFractionsSaleMakerAsk({
     itemIds,
@@ -615,10 +578,7 @@ export class HypercertExchangeClient {
     endTime,
     currency,
     additionalParameters = [],
-  }: Omit<
-    CreateMakerInput,
-    "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts"
-  >): Promise<CreateMakerAskOutput> {
+  }: CreateDirectFractionsSaleMakerAskInput): Promise<CreateMakerAskOutput> {
     const address = await this.signer?.getAddress();
 
     if (!address) {
@@ -654,17 +614,8 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Create a maker ask to let the buyer decide how much of the fraction they want to buy
-   * @param itemIds Token IDs of the fractions to be sold
-   * @param price Price of one unit in wei
-   * @param startTime Timestamp in seconds when the order becomes valid
-   * @param endTime Timestamp in seconds when the order becomes invalid
-   * @param currency Currency used to buy the fractions (default to WETH)
-   * @param maxUnitAmount Maximum amount of units that can be bought in a single transaction
-   * @param minUnitAmount Minimum amount of units that can be bought in a single transaction
-   * @param minUnitsToKeep Minimum amount of units that the seller wants to keep
-   * @param sellLeftoverFraction Whether or not the seller wants to sell the leftover units
-   * @param root Merkle tree root (optional)
+   * Create a maker ask to let the buyer decide how much of a fraction they want to buy
+   * @param CreateFractionalSaleMakerInput
    */
   public async createFractionalSaleMakerAsk({
     itemIds,
@@ -677,16 +628,7 @@ export class HypercertExchangeClient {
     minUnitsToKeep,
     sellLeftoverFraction,
     root,
-  }: Omit<
-    CreateMakerInput,
-    "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts" | "additionalParameters"
-  > & {
-    minUnitAmount: BigNumberish;
-    maxUnitAmount: BigNumberish;
-    minUnitsToKeep: BigNumberish;
-    sellLeftoverFraction: boolean;
-    root?: string;
-  }): Promise<CreateMakerAskOutput> {
+  }: CreateFractionalSaleMakerAskInput): Promise<CreateMakerAskOutput> {
     const address = await this.signer?.getAddress();
 
     if (!address) {
@@ -737,7 +679,7 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Create a taker bid for buying a fraction of an open fractional sale
+   * Create a taker bid for buying part of a fraction
    * @param maker Maker order
    * @param recipient Recipient address of the taker (if none, it will use the sender)
    * @param unitAmount Amount of units to buy
@@ -756,7 +698,7 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Register the order with hypercerts marketplace API.
+   * Register the order with the hypercerts marketplace API
    * @param order Maker order
    * @param signature Signature of the maker order
    */
@@ -778,7 +720,7 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Delete the order
+   * Delete the order from the hypercerts marketplace API
    * @param orderId Order ID
    */
   public async deleteOrder(orderId: string) {
