@@ -7,11 +7,8 @@ import { SolidityType, StrategyType } from "../types";
  * @returns Array of solidity types for encoding
  */
 export const getMakerParamsTypes = (strategy: StrategyType): SolidityType[] => {
-  if (strategy === StrategyType.standard || strategy === StrategyType.collection) {
+  if (strategy === StrategyType.standard) {
     return [];
-  }
-  if (strategy === StrategyType.collectionWithMerkleTree) {
-    return ["bytes32"]; // Merkle tree root
   }
   if (strategy === StrategyType.hypercertFractionOffer) {
     return ["uint256", "uint256", "uint256", "bool"]; //  minUnitAmount, maxUnitAmount, minUnitsToKeep, sellLeftoverFraction
@@ -30,12 +27,6 @@ export const getMakerParamsTypes = (strategy: StrategyType): SolidityType[] => {
 export const getTakerParamsTypes = (strategy: StrategyType): SolidityType[] => {
   if (strategy === StrategyType.standard) {
     return [];
-  }
-  if (strategy === StrategyType.collection) {
-    return ["uint256"]; // Item id
-  }
-  if (strategy === StrategyType.collectionWithMerkleTree) {
-    return ["uint256", "bytes32[]"]; // Item id, merkle proof
   }
   if (strategy === StrategyType.hypercertFractionOffer) {
     return ["uint256", "uint256"]; // unitAmount, pricePerUnit

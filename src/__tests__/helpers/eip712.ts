@@ -7,7 +7,7 @@ import { Maker, SolidityType } from "../../types";
 
 /**
  * Emulate the EIP-712 domain separator computation
- * @external LooksRareProtocol constructor
+ * @external HypercertExchange constructor
  * @param domain
  * @returns string (bytes32)
  */
@@ -25,7 +25,7 @@ export const getDomainSeparator = (domain: TypedDataDomain): string => {
 
 /**
  * Emulate digest computation
- * @external LooksRareProtocol _computeDigestAndVerify function
+ * @external HypercertExchange _computeDigestAndVerify function
  * @param domain
  * @param makerOrder
  * @returns string (bytes32)

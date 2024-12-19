@@ -51,22 +51,13 @@ export enum CollectionType {
   ERC721 = 0,
   ERC1155 = 1,
   HYPERCERT = 2,
-  HYPERBOARD = 3,
 }
 
 /** List of trading strategies */
 export enum StrategyType {
   standard = 0,
-  collection = 10,
-  collectionWithMerkleTree = 2,
-  dutchAuction = 4,
-  itemIdsRange = 5,
-  hypercertCollectionOffer = 6,
-  hypercertCollectionOfferWithProof = 7,
-  hypercertCollectionOfferWithAllowlist = 8,
-  hypercertDutchAuction = 9,
   hypercertFractionOffer = 1,
-  hypercertFractionOfferWithAllowlist = 11,
+  hypercertFractionOfferWithAllowlist = 2,
 }
 
 /** Type for maker order */
@@ -91,17 +82,6 @@ export type SolidityType =
 
 /** EIP712 type data */
 export type EIP712TypedData = Record<string, Array<TypedDataField>>;
-
-/**
- * Item structure used for batch transfers
- * @see {@link https://github.com/LooksRare/contracts-exchange-v2/blob/8de425de2571a57112e9e67cf0c925439a83c9e3/contracts/interfaces/ITransferManager.sol#L16 TransferManager interface}
- */
-export interface BatchTransferItem {
-  collection: string;
-  collectionType: CollectionType;
-  itemIds: BigNumberish[];
-  amounts: BigNumberish[];
-}
 
 /** Return type for any on chain call */
 export interface ContractMethods {
@@ -136,7 +116,7 @@ export interface CreateMakerBidOutput {
 export interface CreateMakerInput {
   /** Collection address */
   collection: string;
-  /** Strategy ID, 0: Standard, 1: Collection, etc*/
+  /** Strategy ID, 0: Sell entire fraction, 1: Sell part of a fraction, etc*/
   strategyId: StrategyType;
   /** Asset type, 0: ERC-721, 1:ERC-1155, etc */
   collectionType: CollectionType;
@@ -149,12 +129,10 @@ export interface CreateMakerInput {
   /** Asset price in wei */
   price: BigNumberish;
   /**
-   * List of items ids to be sold
+   * IDs of fractions to be sold
    * @defaultValue [1]
    */
   itemIds: BigNumberish[];
-  /** Amount for each item ids (needs to have the same length as itemIds array) */
-  amounts?: BigNumberish[];
   /**
    * Currency address
    * @defaultValue ETH
@@ -170,6 +148,41 @@ export interface CreateMakerInput {
    * @defaultValue []
    */
   additionalParameters?: any[];
+}
+
+export type CreateDirectFractionsSaleMakerAskInput = Omit<
+  CreateMakerInput,
+  "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts"
+>;
+
+export type CreateFractionalSaleMakerAskInput = Omit<
+  CreateMakerInput,
+  "strategyId" | "collectionType" | "collection" | "subsetNonce" | "orderNonce" | "amounts" | "additionalParameters" | "price"
+> & {
+  /**
+   * Price of one unit in wei
+   */
+  price: BigNumberish;
+  /**
+   * Minimum amount of units to sell per transaction.
+   */
+  minUnitAmount: BigNumberish;
+  /**
+   * Maximum amount of units to sell per transaction.
+   */
+  maxUnitAmount: BigNumberish;
+  /**
+   * Minimum amount of units to keep after all sales.
+   */
+  minUnitsToKeep: BigNumberish;
+  /**
+   * Whether to sell the leftover fraction, if any. This will override `minUnitsAmount` on the last sale if there are leftover units in the fraction.
+   */
+  sellLeftoverFraction: boolean;
+  /**
+   * Root of the allowlist tree for users that are allowed to buy parts of the fraction.
+   */
+  root?: string;
 }
 
 export type CreateMakerCollectionOfferInput = Omit<CreateMakerInput, "strategyId" | "itemIds">;
@@ -202,9 +215,9 @@ export interface Maker {
   endTime: BigNumberish;
   /** Minimum price to be received after the trade */
   price: BigNumberish;
-  /** List of item IDS */
+  /** List of fraction IDS */
   itemIds: BigNumberish[];
-  /** List of amount for each item ID (1 for ERC721) */
+  /** List of amount for sale for each fraction ID (will always be 1 for hypercert fractions as they are unique) */
   amounts: BigNumberish[];
   /** Additional parameters for complex orders */
   additionalParameters: BytesLike;
