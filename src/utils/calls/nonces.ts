@@ -30,23 +30,6 @@ export const cancelOrderNonces = (
   };
 };
 
-export const cancelSubsetNonces = (
-  signer: Signer,
-  address: string,
-  nonces: BigNumberish[],
-  overrides?: Overrides
-): ContractMethods => {
-  const contract = new Contract(address, abi).connect(signer) as HypercertExchange;
-  return {
-    call: (additionalOverrides?: Overrides) =>
-      contract.cancelSubsetNonces.send(nonces, { ...overrides, ...additionalOverrides }),
-    estimateGas: (additionalOverrides?: Overrides) =>
-      contract.cancelSubsetNonces.estimateGas(nonces, { ...overrides, ...additionalOverrides }),
-    callStatic: (additionalOverrides?: Overrides) =>
-      contract.cancelSubsetNonces.staticCall(nonces, { ...overrides, ...additionalOverrides }),
-  };
-};
-
 export const incrementBidAskNonces = (
   signer: Signer,
   address: string,
