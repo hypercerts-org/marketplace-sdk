@@ -5,18 +5,14 @@ import {
   Overrides,
   Provider,
   Signer,
-  solidityPackedKeccak256,
   TypedDataDomain,
   ZeroAddress,
 } from "ethers";
-import { MerkleTree as MerkleTreeJS } from "merkletreejs";
-import { keccak256 } from "js-sha3";
 import { contractName, version } from "./constants/eip712";
 import { currenciesByNetwork, defaultMerkleTree, MAX_ORDERS_PER_TREE, addressesByNetwork } from "./constants";
 import { signMakerOrder, signMerkleTreeOrders } from "./utils/signMakerOrders";
 import {
   cancelOrderNonces,
-  cancelSubsetNonces,
   incrementBidAskNonces,
   viewUserBidAskNonces,
 } from "./utils/calls/nonces";
@@ -25,7 +21,6 @@ import {
   grantApprovals,
   hasUserApprovedOperator,
   revokeApprovals,
-  transferBatchItemsAcrossCollections,
 } from "./utils/calls/transferManager";
 import { verifyMakerOrders } from "./utils/calls/orderValidator";
 import { encodeParams, getMakerParamsTypes, getTakerParamsTypes } from "./utils/encodeOrderParams";
@@ -33,22 +28,17 @@ import { allowance, approve, balanceOf, isApprovedForAll, setApprovalForAll } fr
 import { strategyInfo } from "./utils/calls/strategies";
 import {
   ErrorCurrency,
-  ErrorItemId,
   ErrorMerkleTreeDepth,
   ErrorQuoteType,
   ErrorSigner,
-  ErrorStrategyType,
   ErrorTimestamp,
 } from "./errors";
 import {
   Addresses,
-  BatchTransferItem,
   ChainId,
   ContractMethods,
   CreateMakerAskOutput,
   CreateMakerBidOutput,
-  CreateMakerCollectionOfferInput,
-  CreateMakerCollectionOfferWithProofInput,
   CreateMakerInput,
   Currencies,
   Maker,
@@ -169,7 +159,6 @@ export class HypercertExchangeClient {
     endTime,
     price,
     itemIds,
-    amounts = [1],
     currency = ZeroAddress,
     startTime = Math.floor(Date.now() / 1000),
     additionalParameters = [],
@@ -209,7 +198,7 @@ export class HypercertExchangeClient {
       endTime: endTime,
       price: price,
       itemIds: itemIds,
-      amounts: amounts,
+      amounts: itemIds.map(_ => 1n),
       additionalParameters: encodeParams(additionalParameters, getMakerParamsTypes(strategyId)),
     };
 
@@ -234,7 +223,6 @@ export class HypercertExchangeClient {
     endTime,
     price,
     itemIds,
-    amounts = [1],
     currency,
     startTime = Math.floor(Date.now() / 1000),
     additionalParameters = [],
@@ -273,7 +261,7 @@ export class HypercertExchangeClient {
       endTime: endTime,
       price: price,
       itemIds: itemIds,
-      amounts: amounts,
+      amounts: itemIds.map(_ => 1n),
       additionalParameters: encodeParams(additionalParameters, getMakerParamsTypes(strategyId)),
     };
 
@@ -331,62 +319,6 @@ export class HypercertExchangeClient {
       recipient: recipient,
       additionalParameters: encodeParams(additionalParameters, getTakerParamsTypes(maker.strategyId)),
     };
-  }
-
-  /**
-   * Create a taker ask order for collection order.
-   * @see this.createTaker
-   * @see this.createMakerCollectionOffer
-   * @param maker Maker bid that will be used as counterparty for the taker
-   * @param itemId Token id to use as a counterparty for the collection order
-   * @param recipient Recipient address of the taker (if none, it will use the sender)
-   * @returns Taker object
-   */
-  public createTakerCollectionOffer(maker: Maker, itemId: BigNumberish, recipient?: string): Taker {
-    if (maker.quoteType !== QuoteType.Bid) {
-      throw new ErrorQuoteType();
-    }
-    if (maker.strategyId !== StrategyType.collection) {
-      throw new ErrorStrategyType();
-    }
-    return this.createTaker(maker, recipient, [itemId]);
-  }
-
-  /**
-   * Create a taker ask to fulfill a collection order (maker bid) created with a whitelist of item ids
-   * @see this.createTaker
-   * @see this.createMakerCollectionOfferWithMerkleTree
-   * @param maker Maker bid that will be used as counterparty for the taker
-   * @param itemId Token id to use as a counterparty for the collection order
-   * @param itemIds List of token ids used during the maker creation
-   * @param recipient Recipient address of the taker (if none, it will use the sender)
-   * @returns Taker object
-   */
-  public createTakerCollectionOfferWithProof(
-    maker: Maker,
-    itemId: BigNumberish,
-    itemIds: BigNumberish[],
-    recipient?: string
-  ): Taker {
-    if (maker.quoteType !== QuoteType.Bid) {
-      throw new ErrorQuoteType();
-    }
-    if (maker.strategyId !== StrategyType.collectionWithMerkleTree) {
-      throw new ErrorStrategyType();
-    }
-    const index = itemIds.findIndex((id) => BigInt(id) === BigInt(itemId));
-    if (index === -1) {
-      throw new ErrorItemId();
-    }
-
-    const leaves = itemIds.map((id) => {
-      const hash = solidityPackedKeccak256(["uint256"], [id]);
-      return Buffer.from(hash.slice(2), "hex");
-    });
-    const tree = new MerkleTreeJS(leaves, keccak256, { sortPairs: true });
-    const proof = tree.getHexProof(leaves[index]);
-
-    return this.createTaker(maker, recipient, [itemId, proof]);
   }
 
   /**
@@ -502,17 +434,7 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Cancel a list of specific subset orders
-   * @param nonces List of nonces to be cancelled
-   * @returns ContractMethods
-   */
-  public cancelSubsetOrders(nonces: BigNumberish[], overrides?: Overrides): ContractMethods {
-    const signer = this.getSigner();
-    return cancelSubsetNonces(signer, this.addresses.EXCHANGE_V2, nonces, overrides);
-  }
-
-  /**
-   * Approve all the items of a collection, to eventually be traded on HypercertExchange
+   * Approve all the items of a collection, to eventually be traded on the Hypercert Exchange
    * The spender is the TransferManager.
    * @param collectionAddress Address of the collection to be approved.
    * @param approved true to approve, false to revoke the approval (default to true)
@@ -585,29 +507,6 @@ export class HypercertExchangeClient {
   ): ContractMethods {
     const signer = this.getSigner();
     return revokeApprovals(signer, this.addresses.TRANSFER_MANAGER_V2, operators, overrides);
-  }
-
-  /**
-   * Transfer a list of items across different collections
-   * @param to Recipient address
-   * @param collectionItems Each object in the array represent a list of items for a specific collection
-   * @returns ContractMethods
-   */
-  public async transferItemsAcrossCollection(
-    to: string,
-    collectionItems: BatchTransferItem[],
-    overrides?: Overrides
-  ): Promise<ContractMethods> {
-    const signer = this.getSigner();
-    const from = await signer.getAddress();
-    return transferBatchItemsAcrossCollections(
-      signer,
-      this.addresses.TRANSFER_MANAGER_V2,
-      collectionItems,
-      from,
-      to,
-      overrides
-    );
   }
 
   /**
@@ -737,8 +636,6 @@ export class HypercertExchangeClient {
       chainId,
     });
 
-    const amounts = Array.from({ length: itemIds.length }, () => 1);
-
     return this.createMakerAsk({
       // Defaults
       strategyId: StrategyType.standard,
@@ -746,7 +643,6 @@ export class HypercertExchangeClient {
       collection: this.addresses.MINTER,
       subsetNonce: 0,
       currency,
-      amounts,
       orderNonce: nonce_counter.toString(),
       // User specified
       itemIds,
@@ -812,7 +708,7 @@ export class HypercertExchangeClient {
 
     const sharedArgs = {
       // Defaults
-      collectionType: 2,
+      collectionType: CollectionType.HYPERCERT,
       collection: this.addresses.MINTER,
       subsetNonce: 0,
       currency,

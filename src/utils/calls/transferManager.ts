@@ -1,6 +1,6 @@
 import { Contract, Overrides, Provider, Signer } from "ethers";
 import { TransferManager, TransferManagerAbi as abi } from "@hypercerts-org/contracts";
-import { ContractMethods, BatchTransferItem } from "../../types";
+import { ContractMethods } from "../../types";
 
 export const hasUserApprovedOperator = async (
   signerOrProvider: Provider | Signer,
@@ -45,33 +45,5 @@ export const revokeApprovals = (
       contract.revokeApprovals.estimateGas(operators, { ...overrides, ...additionalOverrides }),
     callStatic: (additionalOverrides?: Overrides) =>
       contract.revokeApprovals.staticCall(operators, { ...overrides, ...additionalOverrides }),
-  };
-};
-
-export const transferBatchItemsAcrossCollections = (
-  signer: Signer,
-  address: string,
-  items: BatchTransferItem[],
-  from: string,
-  to: string,
-  overrides?: Overrides
-): ContractMethods => {
-  const contract = new Contract(address, abi).connect(signer) as TransferManager;
-  return {
-    call: (additionalOverrides?: Overrides) =>
-      contract.transferBatchItemsAcrossCollections.send(items, from, to, {
-        ...overrides,
-        ...additionalOverrides,
-      }),
-    estimateGas: (additionalOverrides?: Overrides) =>
-      contract.transferBatchItemsAcrossCollections.estimateGas(items, from, to, {
-        ...overrides,
-        ...additionalOverrides,
-      }),
-    callStatic: (additionalOverrides?: Overrides) =>
-      contract.transferBatchItemsAcrossCollections.staticCall(items, from, to, {
-        ...overrides,
-        ...additionalOverrides,
-      }),
   };
 };
