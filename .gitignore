@@ -24,3 +24,8 @@ yarn-error.log*
 tsconfig.tsbuildinfo
 /.idea/
 /.env.test
+
+/.vscode/
+
+# Generated doc files
+/doc/*
