@@ -3,7 +3,7 @@ import { AbiCoder, parseEther } from "ethers";
 import { TypedDataDomain } from "@ethersproject/abstract-signer";
 import { setUpContracts, SetupMocks, getSigners, Signers } from "./helpers/setup";
 import { computeDigestMaker, getDomainSeparator } from "./helpers/eip712";
-import { contractName, version } from "../constants/eip712";
+import { DOMAIN_NAME, DOMAIN_VERSION } from "../constants/eip712";
 import { getMakerHash } from "../utils/eip712";
 import { ChainId, Maker, CollectionType, QuoteType } from "../types";
 
@@ -18,8 +18,8 @@ describe("EIP-712", () => {
     signers = await getSigners();
 
     domain = {
-      name: contractName,
-      version: version.toString(),
+      name: DOMAIN_NAME,
+      version: DOMAIN_VERSION.toString(),
       chainId: ChainId.HARDHAT,
       verifyingContract: mocks.addresses.EXCHANGE_V2,
     };

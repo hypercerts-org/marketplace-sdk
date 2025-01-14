@@ -8,7 +8,7 @@ import {
   TypedDataDomain,
   ZeroAddress,
 } from "ethers";
-import { contractName, version } from "./constants/eip712";
+import { DOMAIN_NAME, DOMAIN_VERSION } from "./constants/eip712";
 import { currenciesByNetwork, defaultMerkleTree, MAX_ORDERS_PER_TREE, addressesByNetwork } from "./constants";
 import { signMakerOrder, signMerkleTreeOrders } from "./utils/signMakerOrders";
 import {
@@ -137,8 +137,8 @@ export class HypercertExchangeClient {
    */
   public getTypedDataDomain(): TypedDataDomain {
     return {
-      name: contractName,
-      version: version.toString(),
+      name: DOMAIN_NAME,
+      version: DOMAIN_VERSION.toString(),
       chainId: this.chainId,
       verifyingContract: this.addresses.EXCHANGE_V2,
     };

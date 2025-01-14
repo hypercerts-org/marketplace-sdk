@@ -3,7 +3,7 @@ import { AbiCoder, parseEther, verifyTypedData, TypedDataDomain } from "ethers";
 import { ethers } from "hardhat";
 import { HypercertExchangeClient } from "../../HypercertExchangeClient";
 import { setUpContracts, SetupMocks, getSigners, Signers } from "../helpers/setup";
-import { contractName, version } from "../../constants/eip712";
+import { DOMAIN_NAME, DOMAIN_VERSION } from "../../constants/eip712";
 import { MAX_ORDERS_PER_TREE } from "../../constants";
 import { encodeParams, getMakerParamsTypes, getTakerParamsTypes } from "../../utils/encodeOrderParams";
 import { makerTypes } from "../../utils/eip712";
@@ -25,8 +25,8 @@ describe("Sign maker orders", () => {
     lrUser1 = new HypercertExchangeClient(ChainId.HARDHAT, ethers.provider, signers.user1, mocks.addresses);
 
     domain = {
-      name: contractName,
-      version: version.toString(),
+      name: DOMAIN_NAME,
+      version: DOMAIN_VERSION.toString(),
       chainId: ChainId.HARDHAT,
       verifyingContract: mocks.addresses.EXCHANGE_V2,
     };

@@ -1,11 +1,12 @@
 /**
- * Name of the LooksRare contract. Used for EIP712 domain separator.
+ * EIP712 domain name.
  * @see {@link https://eips.ethereum.org/EIPS/eip-712#definition-of-domainseparator EIP712 doc}
  */
-export const contractName = "LooksRareProtocol";
+export const DOMAIN_NAME = "LooksRareProtocol";
 
 /**
- * Protocol version. Used for EIP712 domain separator.
+ * EIP712 domain version.
  * @see {@link https://eips.ethereum.org/EIPS/eip-712#definition-of-domainseparator EIP712 doc}
  */
-export const version = 2;
+export const DOMAIN_VERSION = 2;
+
