@@ -73,6 +73,7 @@
     "hardhat": "^2.16.1",
     "hardhat-abi-exporter": "^2.9.0",
     "husky": "^8.0.1",
+    "js-sha3": "^0.9.3",
     "lint-staged": "^13.0.0",
     "nyc": "^15.1.0",
     "prettier": "^2.6.2",
