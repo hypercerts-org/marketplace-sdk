@@ -53,6 +53,7 @@ import {
   Currencies,
   Maker,
   MerkleTree,
+  Order,
   OrderValidatorCode,
   QuoteType,
   SignMerkleTreeOrdersOutput,
@@ -63,7 +64,6 @@ import {
 import { ApiClient } from "./utils/api";
 import { CONSTANTS } from "@hypercerts-org/sdk";
 import { asDeployedChain } from "@hypercerts-org/contracts";
-import { Database } from "./utils/hypercerts-database-types";
 
 const ACCEPTED_ERROR_CODES = [
   OrderValidatorCode.ORDER_EXPECTED_TO_BE_VALID,
@@ -640,7 +640,7 @@ export class HypercertExchangeClient {
    * @param overrides Call overrides (optional)
    */
   public async checkOrdersValidity(
-    orders: Database["public"]["Tables"]["marketplace_orders"]["Row"][],
+    orders: Order[],
     overrides?: Overrides
   ): Promise<
     {
@@ -648,7 +648,7 @@ export class HypercertExchangeClient {
       valid: boolean;
       validatorCodes: OrderValidatorCode[];
       order: Omit<
-        Database["public"]["Tables"]["marketplace_orders"]["Row"],
+        Order,
         "id" | "createdAt" | "invalidated" | "validator_codes"
       >;
     }[]

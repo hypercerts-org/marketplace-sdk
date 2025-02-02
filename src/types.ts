@@ -313,3 +313,27 @@ export enum OrderValidatorCode {
   BUNDLE_ERC2981_NOT_SUPPORTED = 901,
   CREATOR_FEE_TOO_HIGH = 902,
 }
+
+export interface Order {
+  additionalParameters: string
+  amounts: number[]
+  chainId: number
+  collection: string
+  collectionType: number
+  createdAt: string
+  currency: string
+  endTime: number
+  globalNonce: string
+  id: string
+  invalidated: boolean
+  itemIds: string[]
+  orderNonce: string
+  price: string
+  quoteType: number
+  signature: string
+  signer: string
+  startTime: number
+  strategyId: number
+  subsetNonce: number
+  validator_codes: number[] | null
+}

@@ -30,8 +30,8 @@ export const getFractionsById = async (fractionId: string, client: Client) => {
 };
 
 const ordersQuery = graphql(`
-  query OrdersQuery($chainId: BigInt, $signer: String) {
-    orders(where: { chainId: { eq: $chainId }, signer: { eq: $signer } }) {
+  query OrdersQuery($where: OrderWhereInput) {
+    orders(where: $where) {
       count
       data {
         id
@@ -88,11 +88,22 @@ const ordersQuery = graphql(`
   }
 `);
 
-export const getOrders = async ({ chainId, signer }: { chainId?: BigInt; signer?: `0x${string}` }, client: Client) => {
+export const getOrders = async (filter: { chainId?: BigInt; signer?: `0x${string}`; hypercertId?: string }, client: Client) => {
+  const where: Record<string, any> = {};
+
+  if (filter?.chainId) {
+    where.chainId = { eq: filter.chainId.toString() };
+  }
+  if (filter?.signer) {
+    where.signer = { eq: filter.signer };
+  }
+  if (filter?.hypercertId) {
+    where.hypercert_id = { eq: filter.hypercertId };
+  }
+
   const { data, error } = await client
     .query(ordersQuery, {
-      chainId,
-      signer,
+      where,
     })
     .toPromise();
 

@@ -1,21 +1,12 @@
 import { Maker, OrderValidatorCode, QuoteType, StrategyType } from "../types";
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { Database as HypercertsDatabase } from "./hypercerts-database-types";
 import { CONSTANTS, parseClaimOrFractionId } from "@hypercerts-org/sdk";
 import { getFractionsById, getOrders } from "./graphl";
 import { cacheExchange, Client, fetchExchange } from "@urql/core";
 
-const SUPABASE_HYPERCERTS_DATA_STAGING_URL = "https://zgvoyckkistexkfdmjqc.supabase.co";
-const SUPABASE_HYPERCERTS_DATA_STAGING_ANON_KEY_STAGING =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpndm95Y2traXN0ZXhrZmRtanFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc4ODM1MjAsImV4cCI6MjAxMzQ1OTUyMH0.6FWDhwP3ZOM1O3ObvyRKtOsvwhJjbrZL2B1N-0MSpFg";
-const SUPABASE_HYPERCERTS_DATA_PRODUCTION_URL = "https://ueebbafxdbglaqtyslwv.supabase.co";
-const SUPABASE_HYPERCERTS_DATA_PRODUCTION_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZWJiYWZ4ZGJnbGFxdHlzbHd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc1NTA1MzUsImV4cCI6MjAxMzEyNjUzNX0.mhClRFe8QL6IQLMvTXjdprR6agr_OXF9g2CUJBww4mE";
 
 export class ApiClient {
   private _baseUrl: string;
   private readonly _urqlClient: Client;
-  private _supabaseHypercerts: SupabaseClient<HypercertsDatabase>;
 
   constructor(indexerEnvironment: "test" | "production", private readonly baseUrl?: string) {
     const url = baseUrl || `${CONSTANTS.ENDPOINTS[indexerEnvironment]}/v1`;
@@ -28,13 +19,6 @@ export class ApiClient {
       url: `${CONSTANTS.ENDPOINTS[indexerEnvironment]}/v1/graphql`,
       exchanges: [cacheExchange, fetchExchange],
     });
-
-    this._supabaseHypercerts = createClient<HypercertsDatabase>(
-      indexerEnvironment === "test" ? SUPABASE_HYPERCERTS_DATA_STAGING_URL : SUPABASE_HYPERCERTS_DATA_PRODUCTION_URL,
-      indexerEnvironment === "test"
-        ? SUPABASE_HYPERCERTS_DATA_STAGING_ANON_KEY_STAGING
-        : SUPABASE_HYPERCERTS_DATA_PRODUCTION_ANON_KEY
-    );
   }
 
   /**
@@ -104,25 +88,7 @@ export class ApiClient {
    * @param chainId chain id for the order
    * @param strategy strategy for the order
    */
-  fetchOrders = async ({ signer, claimTokenIds, chainId, strategy }: Partial<FetchOrderArgs>) => {
-    let baseQuery = this._supabaseHypercerts.from("marketplace_orders").select("*");
-
-    if (signer) {
-      baseQuery.eq("signer", signer);
-    }
-
-    if (claimTokenIds) {
-      baseQuery = baseQuery.overlaps("itemIds", claimTokenIds);
-    }
-
-    if (chainId) {
-      baseQuery.eq("chainId", chainId);
-    }
-
-    if (strategy) {
-      baseQuery.eq("strategyId", strategy);
-    }
-
+  fetchOrders = async ({ signer, chainId }: Partial<FetchOrderArgs>) => {
     return await getOrders({ signer, chainId: chainId ? BigInt(chainId) : undefined }, this._urqlClient);
   };
 
@@ -132,12 +98,7 @@ export class ApiClient {
    * @param chainId Chain ID
    */
   fetchOrdersByHypercertId = async ({ hypercertId }: { hypercertId: string }) => {
-    const fractions = await getFractionsById(hypercertId, this._urqlClient);
-    const tokenIds =
-      fractions?.flatMap(() => fractions.map((fraction) => parseClaimOrFractionId(fraction.fraction_id!).id)) || [];
-
-    const result = await this._supabaseHypercerts.from("marketplace_orders").select("*").overlaps("itemIds", tokenIds);
-    return result;
+    return getOrders({ hypercertId }, this._urqlClient);
   };
 
   handleResponse = async <T>(res: Response) => {
