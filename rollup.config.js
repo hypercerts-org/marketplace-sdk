@@ -30,5 +30,7 @@ export default {
     "@hypercerts-org/contracts",
     "merkletreejs",
     "js-sha3",
+    "@safe-global/protocol-kit",
+    "@safe-global/api-kit",
   ],
 };

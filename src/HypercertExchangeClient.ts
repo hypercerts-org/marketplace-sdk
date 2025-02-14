@@ -11,17 +11,9 @@ import {
 import { DOMAIN_NAME, DOMAIN_VERSION } from "./constants/eip712";
 import { currenciesByNetwork, defaultMerkleTree, MAX_ORDERS_PER_TREE, addressesByNetwork } from "./constants";
 import { signMakerOrder, signMerkleTreeOrders } from "./utils/signMakerOrders";
-import {
-  cancelOrderNonces,
-  incrementBidAskNonces,
-  viewUserBidAskNonces,
-} from "./utils/calls/nonces";
+import { cancelOrderNonces, incrementBidAskNonces, viewUserBidAskNonces } from "./utils/calls/nonces";
 import { executeMultipleTakerBids, executeTakerAsk, executeTakerBid } from "./utils/calls/exchange";
-import {
-  grantApprovals,
-  hasUserApprovedOperator,
-  revokeApprovals,
-} from "./utils/calls/transferManager";
+import { grantApprovals, hasUserApprovedOperator, revokeApprovals } from "./utils/calls/transferManager";
 import { verifyMakerOrders } from "./utils/calls/orderValidator";
 import { encodeParams, getMakerParamsTypes, getTakerParamsTypes } from "./utils/encodeOrderParams";
 import { allowance, approve, balanceOf, isApprovedForAll, setApprovalForAll } from "./utils/calls/tokens";
@@ -58,6 +50,8 @@ import {
 import { ApiClient } from "./utils/api";
 import { CONSTANTS } from "@hypercerts-org/sdk";
 import { asDeployedChain } from "@hypercerts-org/contracts";
+import { SafeTransactionBuilder } from "./safe/SafeTransactionBuilder";
+import { WalletClient } from "viem";
 
 /**
  * HypercertExchange
@@ -86,17 +80,24 @@ export class HypercertExchangeClient {
   public readonly provider: Provider;
 
   /**
+   * Wallet client
+   */
+  public readonly walletClient?: WalletClient;
+
+  /**
    * HypercertExchange protocol main class
    * @param chainId Chain id for contract interactions
    * @param provider Ethers provider
    * @param signer Ethers signer
    * @param overrides Override contract addresses or API endpoint used
+   * @param walletClient Wallet client, necessary for Safe transactions
    */
   constructor(
     chainId: ChainId,
     provider: Provider,
     signer?: Signer,
-    overrides?: { addresses: Addresses; currencies: Currencies; apiEndpoint?: string }
+    overrides?: { addresses: Addresses; currencies: Currencies; apiEndpoint?: string },
+    walletClient?: WalletClient
   ) {
     const deployment = CONSTANTS.DEPLOYMENTS[asDeployedChain(chainId)];
     if (!deployment) {
@@ -109,6 +110,7 @@ export class HypercertExchangeClient {
     this.signer = signer;
     this.provider = provider;
     this.api = new ApiClient(indexerEnvironment, overrides?.apiEndpoint);
+    this.walletClient = walletClient;
   }
 
   /**
@@ -197,7 +199,7 @@ export class HypercertExchangeClient {
       endTime: endTime,
       price: price,
       itemIds: itemIds,
-      amounts: itemIds.map(_ => 1n),
+      amounts: itemIds.map((_) => 1n),
       additionalParameters: encodeParams(additionalParameters, getMakerParamsTypes(strategyId)),
     };
 
@@ -260,7 +262,7 @@ export class HypercertExchangeClient {
       endTime: endTime,
       price: price,
       itemIds: itemIds,
-      amounts: itemIds.map(_ => 1n),
+      amounts: itemIds.map((_) => 1n),
       additionalParameters: encodeParams(additionalParameters, getMakerParamsTypes(strategyId)),
     };
 
@@ -292,7 +294,6 @@ export class HypercertExchangeClient {
    */
   public async signMakerOrder(maker: Maker): Promise<string> {
     const signer = this.getSigner();
-    console.log("signing against", this.getTypedDataDomain(), maker);
     return await signMakerOrder(signer, this.getTypedDataDomain(), maker);
   }
 
@@ -328,6 +329,29 @@ export class HypercertExchangeClient {
     const signer = this.getSigner();
     const execute = maker.quoteType === QuoteType.Ask ? executeTakerBid : executeTakerAsk;
     return execute(signer, this.addresses.EXCHANGE_V2, taker, maker, signature, merkleTree, overrides);
+  }
+
+  /**
+   * Execute a trade using Safe
+   * @param maker Maker order
+   * @param taker Taker order
+   * @param signature Signature of the maker order
+   * @param merkleTree Optional merkle tree
+   * @returns Safe transaction hash
+   */
+  public executeOrderSafe(
+    safeAddress: string,
+    maker: Maker,
+    taker: Taker,
+    signature: string,
+    overrides?: Overrides
+  ): Promise<string> {
+    if (!this.walletClient) {
+      throw new Error("No wallet client");
+    }
+
+    const safeTransactionBuilder = new SafeTransactionBuilder(this.walletClient, this.chainId, this.addresses);
+    return safeTransactionBuilder.executeOrder(safeAddress, maker, taker, signature, undefined, overrides);
   }
 
   /**
@@ -432,6 +456,27 @@ export class HypercertExchangeClient {
   }
 
   /**
+   * Approve an ERC20 to be used as a currency on the Hypercert Exchange using Safe
+   * @param tokenAddress Address of the ERC20 to approve
+   * @param amount Amount to be approved (default to MaxUint256)
+   * @param safeAddress Address of the Safe to use
+   * @returns Safe transaction hash
+   */
+  public approveErc20Safe(
+    safeAddress: string,
+    tokenAddress: string,
+    amount: bigint = MaxUint256,
+    overrides?: Overrides
+  ): Promise<string> {
+    if (!this.walletClient) {
+      throw new Error("No wallet client");
+    }
+
+    const safeTransactionBuilder = new SafeTransactionBuilder(this.walletClient, this.chainId, this.addresses);
+    return safeTransactionBuilder.approveErc20(safeAddress, tokenAddress, amount);
+  }
+
+  /**
    * Check whether or not an operator has been approved by the user
    * @param operator Operator address (default to the exchange address)
    * @returns true if the operator is approved, false otherwise
@@ -446,6 +491,21 @@ export class HypercertExchangeClient {
   }
 
   /**
+   * Check whether or not an operator has been approved by the Safe
+   * @param safeAddress Address of the Safe to check
+   * @param operator Operator address (default to the exchange address)
+   * @returns true if the operator is approved, false otherwise
+   */
+  public async isTransferManagerApprovedSafe(
+    safeAddress: string,
+    operator: string = this.addresses.EXCHANGE_V2,
+    overrides?: Overrides
+  ): Promise<boolean> {
+    const signer = this.getSigner();
+    return hasUserApprovedOperator(signer, this.addresses.TRANSFER_MANAGER_V2, safeAddress, operator, overrides);
+  }
+
+  /**
    * Grant a list of operators the rights to transfer user's assets using the transfer manager
    * @param operators List of operators (default to the exchange address)
    * @defaultValue Exchange address
@@ -457,6 +517,25 @@ export class HypercertExchangeClient {
   ): ContractMethods {
     const signer = this.getSigner();
     return grantApprovals(signer, this.addresses.TRANSFER_MANAGER_V2, operators, overrides);
+  }
+
+  /**
+   * Grant a list of operators the rights to transfer user's assets using the transfer manager using Safe
+   * @param operators List of operators
+   * @param safeAddress Address of the Safe to use
+   * @returns Safe transaction hash
+   */
+  public grantTransferManagerApprovalSafe(
+    safeAddress: string,
+    operators: string[] = [this.addresses.EXCHANGE_V2],
+    overrides?: Overrides
+  ): Promise<string> {
+    if (!this.walletClient) {
+      throw new Error("No wallet client");
+    }
+
+    const safeTransactionBuilder = new SafeTransactionBuilder(this.walletClient, this.chainId, this.addresses);
+    return safeTransactionBuilder.grantTransferManagerApproval(safeAddress, operators);
   }
 
   /**
@@ -510,10 +589,7 @@ export class HypercertExchangeClient {
       id: string;
       valid: boolean;
       validatorCodes: OrderValidatorCode[];
-      order: Omit<
-        Order,
-        "id" | "createdAt" | "invalidated" | "validator_codes"
-      >;
+      order: Omit<Order, "id" | "createdAt" | "invalidated" | "validator_codes">;
     }[]
   > {
     // Prepare matching orders for validation
@@ -729,5 +805,20 @@ export class HypercertExchangeClient {
     const signedMessage = await signer.signMessage(`Delete listing ${orderId}`);
 
     return this.api.deleteOrder(orderId, signedMessage);
+  }
+
+  /**
+   * Bundle approval operations into a single Safe transaction
+   * @param safeAddress The address of the Safe contract
+   * @param collectionAddress Address of the collection to approve
+   * @returns Transaction hash
+   */
+  public async bundleApprovalsForSafe(
+    safeAddress: string,
+    walletClient: WalletClient,
+    collectionAddress: string
+  ): Promise<string> {
+    const safeBuilder = new SafeTransactionBuilder(walletClient, this.chainId, this.addresses);
+    return safeBuilder.bundleApprovals(safeAddress, collectionAddress);
   }
 }
