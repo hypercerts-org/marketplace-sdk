@@ -27,6 +27,7 @@ import { encodeParams, getMakerParamsTypes, getTakerParamsTypes } from "./utils/
 import { allowance, approve, balanceOf, isApprovedForAll, setApprovalForAll } from "./utils/calls/tokens";
 import { strategyInfo } from "./utils/calls/strategies";
 import {
+  ACCEPTED_ERROR_CODES,
   ErrorCurrency,
   ErrorMerkleTreeDepth,
   ErrorQuoteType,
@@ -57,11 +58,6 @@ import {
 import { ApiClient } from "./utils/api";
 import { CONSTANTS } from "@hypercerts-org/sdk";
 import { asDeployedChain } from "@hypercerts-org/contracts";
-
-const ACCEPTED_ERROR_CODES = [
-  OrderValidatorCode.ORDER_EXPECTED_TO_BE_VALID,
-  OrderValidatorCode.TOO_EARLY_TO_EXECUTE_ORDER,
-];
 
 /**
  * HypercertExchange

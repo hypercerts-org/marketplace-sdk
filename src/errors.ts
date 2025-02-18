@@ -1,4 +1,5 @@
 import { MAX_ORDERS_PER_TREE } from "./constants";
+import { OrderValidatorCode } from "./types";
 
 /** Invalid timestamp format */
 export class ErrorTimestamp extends Error {
@@ -55,3 +56,8 @@ export class ErrorCurrency extends Error {
     super("Currency is not defined or supported");
   }
 }
+
+export const ACCEPTED_ERROR_CODES = [
+  OrderValidatorCode.ORDER_EXPECTED_TO_BE_VALID,
+  OrderValidatorCode.TOO_EARLY_TO_EXECUTE_ORDER,
+];
