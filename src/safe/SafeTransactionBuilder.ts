@@ -8,7 +8,6 @@ import abiIERC20 from "../abis/IERC20.json";
 import { HypercertExchangeAbi } from "@hypercerts-org/contracts";
 
 import { Addresses, ChainId, Maker, MerkleTree, QuoteType, Taker } from "../types";
-import { PayableOverrides } from "../typechain/common";
 import { defaultMerkleTree } from "../constants";
 import { WalletClient } from "viem";
 
