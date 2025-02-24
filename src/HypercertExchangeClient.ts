@@ -18,14 +18,7 @@ import { verifyMakerOrders } from "./utils/calls/orderValidator";
 import { encodeParams, getMakerParamsTypes, getTakerParamsTypes } from "./utils/encodeOrderParams";
 import { allowance, approve, balanceOf, isApprovedForAll, setApprovalForAll } from "./utils/calls/tokens";
 import { strategyInfo } from "./utils/calls/strategies";
-import {
-  ACCEPTED_ERROR_CODES,
-  ErrorCurrency,
-  ErrorMerkleTreeDepth,
-  ErrorQuoteType,
-  ErrorSigner,
-  ErrorTimestamp,
-} from "./errors";
+import { ErrorCurrency, ErrorMerkleTreeDepth, ErrorQuoteType, ErrorSigner, ErrorTimestamp } from "./errors";
 import {
   Addresses,
   ChainId,
@@ -625,7 +618,7 @@ export class HypercertExchangeClient {
     const result = await this.verifyMakerOrders(makers, signatures, undefined, overrides);
     return result.map((res, index) => {
       const order = orders[index];
-      const valid = res.every((code) => ACCEPTED_ERROR_CODES.includes(code));
+      const valid = res.every((code) => code === OrderValidatorCode.ORDER_EXPECTED_TO_BE_VALID);
       return { id: order.id, valid, validatorCodes: res, order };
     });
   }
