@@ -801,8 +801,11 @@ export class HypercertExchangeClient {
   }
 
   /**
-   * Bundle approval operations into a single Safe transaction
+   * Bundle the following operations into a single Safe transaction:
+   * - grantApprovals on the TransferManager
+   * - setApprovalForAll on the collection
    * @param safeAddress The address of the Safe contract
+   * @param walletClient Connected wallet client
    * @param collectionAddress Address of the collection to approve
    * @returns Transaction hash
    */
