@@ -8,6 +8,9 @@ import {
   TypedDataDomain,
   ZeroAddress,
 } from "ethers";
+import { Eip1193Provider } from "@safe-global/protocol-kit";
+import SafeApiKit from "@safe-global/api-kit";
+
 import { DOMAIN_NAME, DOMAIN_VERSION } from "./constants/eip712";
 import { currenciesByNetwork, defaultMerkleTree, MAX_ORDERS_PER_TREE, addressesByNetwork } from "./constants";
 import { signMakerOrder, signMerkleTreeOrders } from "./utils/signMakerOrders";
@@ -41,10 +44,12 @@ import {
   Taker,
 } from "./types";
 import { ApiClient } from "./utils/api";
+import { makerTypes } from "./utils/eip712";
 import { CONSTANTS } from "@hypercerts-org/sdk";
 import { asDeployedChain } from "@hypercerts-org/contracts";
 import { SafeTransactionBuilder } from "./safe/SafeTransactionBuilder";
 import { WalletClient } from "viem";
+import { SafeMessages } from "./safe/SafeMessages";
 
 /**
  * HypercertExchange
@@ -156,14 +161,15 @@ export class HypercertExchangeClient {
     currency = ZeroAddress,
     startTime = Math.floor(Date.now() / 1000),
     additionalParameters = [],
-  }: CreateMakerInput): Promise<CreateMakerAskOutput> {
-    const signer = this.getSigner();
-
+    safeAddress,
+  }: CreateMakerInput & { safeAddress?: string }): Promise<CreateMakerAskOutput> {
     if (!this.isTimestampValid(startTime) || !this.isTimestampValid(endTime)) {
       throw new ErrorTimestamp();
     }
 
-    const signerAddress = await signer.getAddress();
+
+    // Use safeAddress if provided, otherwise get from signer
+    const signerAddress = safeAddress || await this.getSigner().getAddress();
     const spenderAddress = this.addresses.TRANSFER_MANAGER_V2;
 
     // Use this.provider (MulticallProvider) in order to batch the calls
@@ -288,6 +294,31 @@ export class HypercertExchangeClient {
   public async signMakerOrder(maker: Maker): Promise<string> {
     const signer = this.getSigner();
     return await signMakerOrder(signer, this.getTypedDataDomain(), maker);
+  }
+
+  /**
+   * Create a maker order message and upload it to the Safe Transaction Service to be signed in the Safe app
+   * @param maker Order to be signed by the user
+   * @param safeAddress Address of the Safe to use
+   * @param safeApiKit Optional pre-initialized Safe API Kit instance
+   * @returns Signature
+   */
+  public async signMakerOrderSafe(maker: Maker, safeAddress: string, safeApiKit?: SafeApiKit): Promise<string> {
+    if (!this.walletClient) {
+      throw new Error("wallet client is required to sign a maker order using Safe");
+    }
+    const safe = new SafeMessages(
+      safeAddress as `0x${string}`,
+      this.chainId,
+      // The underlying provider is an Eip1193Provider, but the type is not exported
+      this.walletClient as unknown as Eip1193Provider,
+      safeApiKit
+    )
+    // The assertion to unknown and Record<string, unknown> is necessary because Maker is a closed type while
+    // Record<string, unknown> is not. Thus TypeScript will complain about the types having no overlap. But we know
+    // that Maker is a Record<string, unknown> and sign() is not trying to get keys out of the Record that don't
+    // exist on Maker, so we can safely type assert here.
+    return safe.signAndSubmit(maker as unknown as Record<string, unknown>, makerTypes, "Maker");
   }
 
   /**
@@ -654,11 +685,9 @@ export class HypercertExchangeClient {
       throw new ErrorCurrency();
     }
 
-    const chainId = this.chainId;
-
     const { nonce_counter } = await this.api.fetchOrderNonce({
       address,
-      chainId,
+      chainId: this.chainId,
     });
 
     return this.createMakerAsk({
@@ -679,6 +708,50 @@ export class HypercertExchangeClient {
   }
 
   /**
+   * Create a maker ask for a collection or singular offer of fractions using Safe
+   * @param CreateDirectFractionsSaleMakerAskInput
+   */
+  public async createDirectFractionsSaleMakerAskSafe({
+    itemIds,
+    price,
+    startTime,
+    endTime,
+    currency,
+    additionalParameters = [],
+    safeAddress,
+  }: CreateDirectFractionsSaleMakerAskInput & { safeAddress: string }): Promise<CreateMakerAskOutput> {
+    if (!safeAddress) {
+      throw new Error("Safe address is required for Safe transactions");
+    }
+
+    if (!currency) {
+      throw new ErrorCurrency();
+    }
+
+    const { nonce_counter } = await this.api.fetchOrderNonce({
+      address: safeAddress,
+      chainId: this.chainId,
+    });
+
+    return this.createMakerAsk({
+      // Defaults
+      strategyId: StrategyType.standard,
+      collectionType: 2,
+      collection: this.addresses.MINTER,
+      subsetNonce: 0,
+      currency,
+      orderNonce: nonce_counter.toString(),
+      // User specified
+      itemIds,
+      price,
+      startTime,
+      endTime,
+      additionalParameters,
+      safeAddress,
+    });
+  }
+
+  /**
    * Create a maker ask to let the buyer decide how much of a fraction they want to buy
    * @param CreateFractionalSaleMakerInput
    */
@@ -694,10 +767,81 @@ export class HypercertExchangeClient {
     sellLeftoverFraction,
     root,
   }: CreateFractionalSaleMakerAskInput): Promise<CreateMakerAskOutput> {
-    const address = await this.signer?.getAddress();
+    return this.prepareFractionalSaleMakerAsk({
+      itemIds,
+      price,
+      startTime,
+      endTime,
+      currency,
+      maxUnitAmount,
+      minUnitAmount,
+      minUnitsToKeep,
+      sellLeftoverFraction,
+      root,
+    });
+  }
+
+  /**
+   * Create a maker ask to let the buyer decide how much of a fraction they want to buy using Safe
+   * @param CreateFractionalSaleMakerInput
+   */
+  public async createFractionalSaleMakerAskSafe({
+    itemIds,
+    price,
+    startTime,
+    endTime,
+    currency,
+    maxUnitAmount,
+    minUnitAmount,
+    minUnitsToKeep,
+    sellLeftoverFraction,
+    root,
+    safeAddress,
+  }: CreateFractionalSaleMakerAskInput & { safeAddress: string }): Promise<CreateMakerAskOutput> {
+    if (!safeAddress) {
+      throw new Error("Safe address is required for Safe transactions");
+    }
+
+    return this.prepareFractionalSaleMakerAsk({
+      itemIds,
+      price,
+      startTime,
+      endTime,
+      currency,
+      maxUnitAmount,
+      minUnitAmount,
+      minUnitsToKeep,
+      sellLeftoverFraction,
+      root,
+      safeAddress,
+    });
+  }
+
+  /**
+   * Prepare a fractional sale maker ask with common logic for both regular and Safe transactions
+   * @param params CreateFractionalSaleMakerInput with optional safeAddress
+   * @private
+   */
+  private async prepareFractionalSaleMakerAsk({
+    itemIds,
+    price,
+    startTime,
+    endTime,
+    currency,
+    maxUnitAmount,
+    minUnitAmount,
+    minUnitsToKeep,
+    sellLeftoverFraction,
+    root,
+    safeAddress,
+  }: CreateFractionalSaleMakerAskInput & { safeAddress?: string }): Promise<CreateMakerAskOutput> {
+    let address = safeAddress;
 
     if (!address) {
-      throw new Error("No signer address could be determined");
+      address = await this.getSigner().getAddress();
+      if (!address) {
+        throw new Error("No signer address could be determined");
+      }
     }
 
     if (!currency) {
@@ -726,6 +870,7 @@ export class HypercertExchangeClient {
       price,
       startTime,
       endTime,
+      safeAddress,
     };
 
     if (root) {

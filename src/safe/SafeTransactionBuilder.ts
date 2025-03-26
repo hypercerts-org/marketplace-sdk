@@ -135,6 +135,7 @@ export class SafeTransactionBuilder {
     const nonce = await this.apiKit.getNextNonce(safeAddress);
     const safeTx = await connected.createTransaction({
       transactions,
+      onlyCalls: true,
       options: {
         nonce,
       },

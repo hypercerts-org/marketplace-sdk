@@ -43,6 +43,7 @@
   "peerDependencies": {
     "@safe-global/api-kit": "^2.5.7",
     "@safe-global/protocol-kit": "^5.2.0",
+    "@safe-global/types-kit": "^1.0.4",
     "ethers": "^6.6.2"
   },
   "devDependencies": {
