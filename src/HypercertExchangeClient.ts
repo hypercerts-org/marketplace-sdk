@@ -606,7 +606,7 @@ export class HypercertExchangeClient {
    * @param overrides Call overrides (optional)
    */
   public async checkOrdersValidity(
-    orders: Order[],
+    orders: Omit<Order, "createdAt" | "invalidated" | "validator_codes">[],
     overrides?: Overrides
   ): Promise<
     {
