@@ -950,6 +950,17 @@ export class HypercertExchangeClient {
   }
 
   /**
+   * Register the order with the hypercerts marketplace API for Safe transactions
+   * @param messageHash The message hash from the Safe transaction
+   */
+  public async registerOrderSafe({ messageHash }: { messageHash: string }) {
+    return this.api.registerOrderSafe({
+      messageHash,
+      chainId: this.chainId,
+    });
+  }
+
+  /**
    * Delete the order from the hypercerts marketplace API
    * @param orderId Order ID
    */

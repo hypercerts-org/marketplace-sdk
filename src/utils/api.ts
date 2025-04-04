@@ -70,11 +70,37 @@ export class ApiClient {
       },
       body: JSON.stringify({
         ...orderWithoutGlobalNonce,
+        type: "eoa",
         globalNonce: globalNonce.toString(10),
         price: order.price.toString(10),
         quoteType,
         signer,
         signature,
+        chainId,
+      }),
+    }).then((res) => this.handleResponse<{ success: boolean }>(res));
+  };
+
+  /**
+   * Registers order in the marketplace API for Safe transactions
+   * @param messageHash The message hash from the Safe transaction
+   * @param chainId Chain ID
+   */
+  registerOrderSafe = async ({
+    messageHash,
+    chainId,
+  }: {
+    messageHash: string;
+    chainId: number;
+  }) => {
+    return fetch(`${this._baseUrl}/marketplace/orders/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "multisig",
+        messageHash,
         chainId,
       }),
     }).then((res) => this.handleResponse<{ success: boolean }>(res));
