@@ -463,6 +463,26 @@ export class HypercertExchangeClient {
   }
 
   /**
+   * Approve all items in a collection for trading on the Hypercert Exchange using Safe
+   * @param collectionAddress Address of the collection to be approved
+   * @param approved true to approve, false to revoke the approval (default to true)
+   * @param safeAddress Address of the Safe to use
+   * @returns Safe transaction hash
+   */
+  public approveAllCollectionItemsSafe(
+    safeAddress: string,
+    collectionAddress: string,
+    approved = true
+  ): Promise<string> {
+    if (!this.walletClient) {
+      throw new Error("No wallet client");
+    }
+
+    const safeTransactionBuilder = new SafeTransactionBuilder(this.walletClient, this.chainId, this.addresses);
+    return safeTransactionBuilder.approveAllCollectionItems(safeAddress, collectionAddress, approved);
+  }
+
+  /**
    * Approve an ERC20 to be used as a currency on the Hypercert Exchange.
    * The spender is the HypercertExchangeProtocol contract.
    * @param tokenAddress Address of the ERC20 to approve
