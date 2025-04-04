@@ -20,6 +20,9 @@ importers:
       '@safe-global/protocol-kit':
         specifier: ^5.2.0
         version: 5.2.0(typescript@5.7.2)(zod@3.24.1)
+      '@safe-global/types-kit':
+        specifier: ^1.0.4
+        version: 1.0.4(typescript@5.7.2)(zod@3.24.1)
       '@urql/core':
         specifier: ^5.0.4
         version: 5.1.0(graphql@16.10.0)
@@ -975,8 +978,8 @@ packages:
   '@safe-global/safe-modules-deployments@2.2.4':
     resolution: {integrity: sha512-m396ZrBPhZVYkapTTIuizyOOtoZsCKbicl0ztgDFfDbi7KbS6AtDP6cV89AYosQxUQS+v0q4ksQd30/j3L1BtQ==}
 
-  '@safe-global/types-kit@1.0.1':
-    resolution: {integrity: sha512-T1mAgUVjtGehpwcZuROHgCx3DJHnaH0d2pSzYNcsEPvXlffu3lfCRTbrlmyEAVMEKtHaNvl7//v+GJKeLIeKhw==}
+  '@safe-global/types-kit@1.0.4':
+    resolution: {integrity: sha512-PTVgu+tNrC0km7J/vSZBDGyv0yAEc9IWgh6oWyBPsCysxuLUqyVA53K1qrzzGfJL2mzpC7Bj4bx+Bt6iP9m/yQ==}
 
   '@scure/base@1.1.9':
     resolution: {integrity: sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg==}
@@ -5689,7 +5692,7 @@ snapshots:
   '@safe-global/api-kit@2.5.7(encoding@0.1.13)(typescript@5.7.2)(zod@3.24.1)':
     dependencies:
       '@safe-global/protocol-kit': 5.2.0(typescript@5.7.2)(zod@3.24.1)
-      '@safe-global/types-kit': 1.0.1(typescript@5.7.2)(zod@3.24.1)
+      '@safe-global/types-kit': 1.0.4(typescript@5.7.2)(zod@3.24.1)
       node-fetch: 2.7.0(encoding@0.1.13)
       viem: 2.21.55(typescript@5.7.2)(zod@3.24.1)
     transitivePeerDependencies:
@@ -5703,7 +5706,7 @@ snapshots:
     dependencies:
       '@safe-global/safe-deployments': 1.37.24
       '@safe-global/safe-modules-deployments': 2.2.4
-      '@safe-global/types-kit': 1.0.1(typescript@5.7.2)(zod@3.24.1)
+      '@safe-global/types-kit': 1.0.4(typescript@5.7.2)(zod@3.24.1)
       abitype: 1.0.7(typescript@5.7.2)(zod@3.24.1)
       semver: 7.6.3
       viem: 2.21.55(typescript@5.7.2)(zod@3.24.1)
@@ -5722,9 +5725,9 @@ snapshots:
 
   '@safe-global/safe-modules-deployments@2.2.4': {}
 
-  '@safe-global/types-kit@1.0.1(typescript@5.7.2)(zod@3.24.1)':
+  '@safe-global/types-kit@1.0.4(typescript@5.7.2)(zod@3.24.1)':
     dependencies:
-      abitype: 1.0.7(typescript@5.7.2)(zod@3.24.1)
+      abitype: 1.0.8(typescript@5.7.2)(zod@3.24.1)
     transitivePeerDependencies:
       - typescript
       - zod

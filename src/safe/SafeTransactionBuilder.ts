@@ -8,7 +8,6 @@ import abiIERC20 from "../abis/IERC20.json";
 import { HypercertExchangeAbi } from "@hypercerts-org/contracts";
 
 import { Addresses, ChainId, Maker, MerkleTree, QuoteType, Taker } from "../types";
-import { PayableOverrides } from "../typechain/common";
 import { defaultMerkleTree } from "../constants";
 import { WalletClient } from "viem";
 
@@ -111,6 +110,30 @@ export class SafeTransactionBuilder {
   }
 
   /**
+   * Approve all items in a collection for trading on the Hypercert Exchange using Safe
+   * @internal
+   */
+  public approveAllCollectionItems(
+    safeAddress: string,
+    collectionAddress: string,
+    approved = true
+  ): Promise<string> {
+    const erc721Contract = new Contract(collectionAddress, abiIERC721);
+    const transactions = [
+      {
+        to: collectionAddress,
+        data: erc721Contract.interface.encodeFunctionData("setApprovalForAll", [
+          this.addresses.TRANSFER_MANAGER_V2,
+          approved,
+        ]),
+        value: "0",
+      },
+    ];
+
+    return this.performSafeTransactions(safeAddress, transactions);
+  }
+
+  /**
    * Perform a series of Safe transactions in a single transaction
    * @internal
    */
@@ -136,6 +159,7 @@ export class SafeTransactionBuilder {
     const nonce = await this.apiKit.getNextNonce(safeAddress);
     const safeTx = await connected.createTransaction({
       transactions,
+      onlyCalls: true,
       options: {
         nonce,
       },
