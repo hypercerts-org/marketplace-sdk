@@ -756,7 +756,7 @@ export class HypercertExchangeClient {
     return this.createMakerAsk({
       // Defaults
       strategyId: StrategyType.standard,
-      collectionType: 2,
+      collectionType: CollectionType.HYPERCERT,
       collection: this.addresses.MINTER,
       subsetNonce: 0,
       currency,
