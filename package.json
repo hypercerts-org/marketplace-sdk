@@ -1,6 +1,6 @@
 {
   "name": "@hypercerts-org/marketplace-sdk",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "license": "MIT",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -43,6 +43,7 @@
   "peerDependencies": {
     "@safe-global/api-kit": "^2.5.7",
     "@safe-global/protocol-kit": "^5.2.0",
+    "@safe-global/types-kit": "^1.0.4",
     "ethers": "^6.6.2"
   },
   "devDependencies": {
