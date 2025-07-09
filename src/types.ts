@@ -17,7 +17,7 @@ export interface Currency {
 }
 
 /** All possible supported currencies */
-export const SUPPORTED_CURRENCIES = ["ETH", "WETH", "DAI", "CELO", "cUSD", "USDT", "USDC"] as const;
+export const SUPPORTED_CURRENCIES = ["ETH", "WETH", "DAI", "CELO", "cUSD", "USDT", "USDC", "USDGLO"] as const;
 
 export type SupportedCurrencySymbol = (typeof SUPPORTED_CURRENCIES)[number];
 

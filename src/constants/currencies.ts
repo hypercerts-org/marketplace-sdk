@@ -13,6 +13,7 @@ type CeloCurrencies = {
   cUSD: `0x${string}`;
   USDC: `0x${string}`;
   USDT: `0x${string}`;
+  USDGLO: `0x${string}`;
 };
 
 type CurrenciesForChain = DefaultCurrencies | CeloCurrencies;
@@ -53,6 +54,7 @@ const currencyAddressesPerChain: Record<ChainId, CurrenciesForChain> = {
     cUSD: "0x765DE816845861e75A25fCA122bb6898B8B1282a",
     USDC: "0xcebA9300f2b948710d2653dD7B07f33A8B32118C",
     USDT: "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e",
+    USDGLO: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   },
   [ChainId.ARBITRUM]: {
     ETH: ZeroAddress as `0x${string}`,
@@ -110,6 +112,11 @@ const getCurrencies = (chainId: ChainId): Currencies => {
       symbol: "USDT",
       address: currenciesForChain.USDT,
       decimals: 6,
+    },
+    USDGLO: {
+      symbol: "USDGLO",
+      address: currenciesForChain.USDGLO,
+      decimals: 18,
     },
   };
 };
