@@ -1,4 +1,10 @@
-# @hypercerts-org/marketplace-sdk
+# @hypercerts-org/marketplace-sdk (archived)
+
+> [!IMPORTANT]
+> This repository is archived and no longer maintained. It holds the TypeScript SDK for the Hypercerts v1 marketplace (the HypercertsExchange contracts), published on npm as `@hypercerts-org/marketplace-sdk`. It began as a fork of LooksRare's [sdk-v2](https://github.com/LooksRare/sdk-v2). Published versions stay available on npm.
+
+- Hypercerts has reached v2, and the v1 app has been retired. See [hypercerts.org/v1-retired](https://hypercerts.org/v1-retired).
+- For Hypercerts v2, see [hypercerts.org](https://hypercerts.org) and the [documentation](https://docs.hypercerts.org).
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/hypercerts-org/marketplace-sdk) ![GitHub](https://img.shields.io/github/license/hypercerts-org/marketplace-sdk) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/hypercerts-org/marketplace-sdk/build.yml) ![npm](https://img.shields.io/npm/dt/@hypercerts-org/marketplace-sdk)
 
@@ -131,3 +137,7 @@ graph TD
     C6 --> G1
     G1 --> G2
 ```
+
+## License
+
+Licensed under either [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE), at your option. It began as LooksRare's [sdk-v2](https://github.com/LooksRare/sdk-v2), which is MIT-licensed; LooksRare's copyright notice is in [LICENSE-MIT](LICENSE-MIT).
